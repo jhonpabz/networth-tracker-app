@@ -1,28 +1,39 @@
 import { useState, useEffect } from 'react';
 import { useLocalStorage } from './useLocalStorage';
 
+interface SecurityData {
+  pin: string;
+  question: string;
+  answer: string;
+}
+
 export const usePin = () => {
-  const [storedPin, setStoredPin] = useLocalStorage<string | null>('userPin', null);
+  const [securityData, setSecurityData] = useLocalStorage<SecurityData | null>('userSecurity', null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Check if user is already authenticated in this session
     const sessionAuth = sessionStorage.getItem('pinAuthenticated');
-    if (sessionAuth === 'true' && storedPin) {
+    if (sessionAuth === 'true' && securityData) {
       setIsAuthenticated(true);
     }
     setIsLoading(false);
-  }, [storedPin]);
+  }, [securityData]);
 
-  const setPin = (pin: string) => {
-    setStoredPin(pin);
+  const setPin = (pin: string, securityQuestion: string, securityAnswer: string) => {
+    const newSecurityData: SecurityData = {
+      pin,
+      question: securityQuestion,
+      answer: securityAnswer
+    };
+    setSecurityData(newSecurityData);
     setIsAuthenticated(true);
     sessionStorage.setItem('pinAuthenticated', 'true');
   };
 
   const verifyPin = (enteredPin: string) => {
-    if (enteredPin === storedPin) {
+    if (securityData && enteredPin === securityData.pin) {
       setIsAuthenticated(true);
       sessionStorage.setItem('pinAuthenticated', 'true');
       return true;
@@ -33,8 +44,15 @@ export const usePin = () => {
     }
   };
 
+  const verifySecurityAnswer = (enteredAnswer: string) => {
+    if (securityData && enteredAnswer.toLowerCase() === securityData.answer.toLowerCase()) {
+      return true;
+    }
+    return false;
+  };
+
   const resetPin = () => {
-    setStoredPin(null);
+    setSecurityData(null);
     setIsAuthenticated(false);
     sessionStorage.removeItem('pinAuthenticated');
     // Also clear all app data when PIN is reset
@@ -47,11 +65,13 @@ export const usePin = () => {
   };
 
   return {
-    hasPin: !!storedPin,
+    hasPin: !!securityData,
     isAuthenticated,
     isLoading,
+    securityQuestion: securityData?.question,
     setPin,
     verifyPin,
+    verifySecurityAnswer,
     resetPin,
     logout
   };

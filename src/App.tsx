@@ -12,7 +12,7 @@ import PinSetup from './components/PinSetup';
 import PinEntry from './components/PinEntry';
 
 const App: React.FC = () => {
-  const { hasPin, isAuthenticated, isLoading, setPin, verifyPin, resetPin } = usePin();
+  const { hasPin, isAuthenticated, isLoading, securityQuestion, setPin, verifyPin, verifySecurityAnswer, resetPin } = usePin();
   const [accounts, setAccounts] = useLocalStorage<Account[]>('accounts', []);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingAccount, setEditingAccount] = useState<Account | undefined>(undefined);
@@ -47,7 +47,12 @@ const App: React.FC = () => {
     return (
       <ThemeContext.Provider value={themeProvider}>
         <ThemeToggle />
-        <PinEntry onPinEntered={verifyPin} onForgotPin={resetPin} />
+        <PinEntry 
+          onPinEntered={verifyPin} 
+          onForgotPin={resetPin}
+          securityQuestion={securityQuestion}
+          onSecurityAnswer={verifySecurityAnswer}
+        />
       </ThemeContext.Provider>
     );
   }
