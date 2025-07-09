@@ -1,27 +1,65 @@
 import React, { useState } from 'react';
 import { Plus } from 'lucide-react';
-import { Account, ThemeContextType } from './types/Account';
-import { useLocalStorage } from './hooks/useLocalStorage';
+import { Account } from './types/Account';
 import { useThemeProvider, ThemeContext } from './hooks/useTheme';
+import { useLocalStorage } from './hooks/useLocalStorage';
+import { usePin } from './hooks/usePin';
 import NetWorthDisplay from './components/NetWorthDisplay';
 import AccountCard from './components/AccountCard';
 import AddAccountModal from './components/AddAccountModal';
 import ThemeToggle from './components/ThemeToggle';
+import PinSetup from './components/PinSetup';
+import PinEntry from './components/PinEntry';
 
 const App: React.FC = () => {
-  const [accounts, setAccounts] = useLocalStorage<Account[]>('networth-accounts', []);
+  const { hasPin, isAuthenticated, isLoading, setPin, verifyPin, resetPin } = usePin();
+  const [accounts, setAccounts] = useLocalStorage<Account[]>('accounts', []);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingAccount, setEditingAccount] = useState<Account | undefined>(undefined);
   const themeProvider = useThemeProvider();
+
+  // Show loading screen while checking PIN status
+  if (isLoading) {
+    return (
+      <ThemeContext.Provider value={themeProvider}>
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+          </div>
+        </div>
+      </ThemeContext.Provider>
+    );
+  }
+
+  // Show PIN setup if no PIN is set
+  if (!hasPin) {
+    return (
+      <ThemeContext.Provider value={themeProvider}>
+        <ThemeToggle />
+        <PinSetup onPinSet={setPin} />
+      </ThemeContext.Provider>
+    );
+  }
+
+  // Show PIN entry if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <ThemeContext.Provider value={themeProvider}>
+        <ThemeToggle />
+        <PinEntry onPinEntered={verifyPin} onForgotPin={resetPin} />
+      </ThemeContext.Provider>
+    );
+  }
 
   const totalNetWorth = accounts.reduce((sum, account) => sum + account.balance, 0);
 
   const handleAddAccount = (accountData: Omit<Account, 'id'>) => {
     if (editingAccount) {
-      setAccounts(accounts.map(acc => 
-        acc.id === editingAccount.id 
+      setAccounts(accounts.map(account => 
+        account.id === editingAccount.id 
           ? { ...accountData, id: editingAccount.id }
-          : acc
+          : account
       ));
       setEditingAccount(undefined);
     } else {
@@ -39,7 +77,7 @@ const App: React.FC = () => {
   };
 
   const handleDeleteAccount = (id: string) => {
-    setAccounts(accounts.filter(acc => acc.id !== id));
+    setAccounts(accounts.filter(account => account.id !== id));
   };
 
   const handleCloseModal = () => {
@@ -75,15 +113,6 @@ const App: React.FC = () => {
             </button>
           </div>
 
-          {/* Mobile Floating Action Button */}
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center z-40 hover:scale-105"
-            aria-label="Add Account"
-          >
-            <Plus className="w-6 h-6" />
-          </button>
-
           {accounts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {accounts.map((account) => (
@@ -114,13 +143,6 @@ const App: React.FC = () => {
                   <Plus className="w-5 h-5" />
                   Add Your First Account
                 </button>
-                <button
-                  onClick={() => setIsModalOpen(true)}
-                  className="md:hidden w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center hover:scale-105"
-                  aria-label="Add Your First Account"
-                >
-                  <Plus className="w-6 h-6" />
-                </button>
               </div>
             </div>
           )}
@@ -132,7 +154,7 @@ const App: React.FC = () => {
             editingAccount={editingAccount}
           />
 
-          {/* Mobile Floating Action Button - Always visible on mobile */}
+          {/* Mobile Floating Action Button */}
           <button
             onClick={() => setIsModalOpen(true)}
             className="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center z-40 hover:scale-105"
