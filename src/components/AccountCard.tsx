@@ -1,7 +1,8 @@
 import React from 'react';
-import { Edit2, Trash2, Building2, Banknote, CreditCard, Wallet, PiggyBank, Landmark, Leaf as Safe, Coins, DollarSign, TrendingUp } from 'lucide-react';
+import { Edit2, Trash2, Building2 } from 'lucide-react';
 import { Account } from '../types/Account';
 import { getColorClasses } from '../utils/colors';
+import { getIconOption, getLucideIcon } from '../utils/icons';
 
 interface AccountCardProps {
   account: Account;
@@ -18,23 +19,13 @@ const AccountCard: React.FC<AccountCardProps> = ({ account, onEdit, onDelete }) 
     }).format(amount);
   };
 
-  const getIcon = (iconName: string) => {
-    const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = {
-      'building-2': Building2,
-      'banknote': Banknote,
-      'credit-card': CreditCard,
-      'wallet': Wallet,
-      'piggy-bank': PiggyBank,
-      'landmark': Landmark,
-      'safe': Safe,
-      'coins': Coins,
-      'dollar-sign': DollarSign,
-      'trending-up': TrendingUp,
-    };
-    return iconMap[iconName] || Building2;
-  };
-
-  const IconComponent = getIcon(account.icon);
+  const iconOption = getIconOption(account.icon);
+  const resolvedIconType = account.iconType ?? iconOption?.type ?? 'lucide';
+  const IconComponent = resolvedIconType === 'lucide'
+    ? getLucideIcon(account.icon) ?? Building2
+    : undefined;
+  const imageSrc = resolvedIconType === 'image' ? iconOption?.src : undefined;
+  const FallbackIcon = IconComponent ?? Building2;
 
   return (
     <div className="group relative overflow-hidden bg-white dark:bg-gray-800 rounded-xl shadow-sm dark:shadow-gray-900/20 border border-gray-200 dark:border-gray-700 hover:shadow-lg dark:hover:shadow-gray-900/40 transition-all duration-300">
@@ -43,7 +34,15 @@ const AccountCard: React.FC<AccountCardProps> = ({ account, onEdit, onDelete }) 
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="p-2 bg-white/20 rounded-lg">
-                <IconComponent className="w-5 h-5 text-white" />
+                {resolvedIconType === 'image' && imageSrc ? (
+                  <img
+                    src={imageSrc}
+                    alt={`${account.name} icon`}
+                    className="w-6 h-6 object-contain"
+                  />
+                ) : (
+                  <FallbackIcon className="w-5 h-5 text-white" />
+                )}
               </div>
               <h3 className="font-semibold text-white truncate">{account.name}</h3>
             </div>

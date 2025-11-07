@@ -4,6 +4,7 @@ export interface Account {
   balance: number;
   color: string;
   icon: string;
+  iconType?: 'lucide' | 'image';
 }
 
 export interface ThemeContextType {

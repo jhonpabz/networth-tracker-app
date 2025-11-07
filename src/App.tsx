@@ -6,6 +6,7 @@ import { useLocalStorage } from './hooks/useLocalStorage';
 import { usePin } from './hooks/usePin';
 import NetWorthDisplay from './components/NetWorthDisplay';
 import AccountCard from './components/AccountCard';
+import AccountCardTile from './components/AccountCardTile';
 import AddAccountModal from './components/AddAccountModal';
 import ThemeToggle from './components/ThemeToggle';
 import PinSetup from './components/PinSetup';
@@ -16,6 +17,7 @@ const App: React.FC = () => {
   const [accounts, setAccounts] = useLocalStorage<Account[]>('accounts', []);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingAccount, setEditingAccount] = useState<Account | undefined>(undefined);
+  const [viewMode, setViewMode] = useState<'classic' | 'wallet'>('classic');
   const themeProvider = useThemeProvider();
 
   // Show loading screen while checking PIN status
@@ -61,15 +63,16 @@ const App: React.FC = () => {
 
   const handleAddAccount = (accountData: Omit<Account, 'id'>) => {
     if (editingAccount) {
-      setAccounts(accounts.map(account => 
-        account.id === editingAccount.id 
-          ? { ...accountData, id: editingAccount.id }
+      setAccounts(accounts.map(account =>
+        account.id === editingAccount.id
+          ? { ...accountData, id: editingAccount.id, iconType: accountData.iconType ?? editingAccount.iconType ?? 'lucide' }
           : account
       ));
       setEditingAccount(undefined);
     } else {
       const newAccount: Account = {
         ...accountData,
+        iconType: accountData.iconType ?? 'lucide',
         id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
       };
       setAccounts([...accounts, newAccount]);
@@ -100,7 +103,7 @@ const App: React.FC = () => {
             <NetWorthDisplay totalNetWorth={totalNetWorth} accountCount={accounts.length} />
           </div>
 
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8">
             <div>
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                 Your Accounts
@@ -109,25 +112,64 @@ const App: React.FC = () => {
                 Manage your savings accounts and track your financial growth
               </p>
             </div>
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="hidden md:inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
-            >
-              <Plus className="w-5 h-5" />
-              Add Account
-            </button>
+            <div className="flex items-center gap-3 self-start md:self-center">
+              <div className="rounded-full bg-gray-100 dark:bg-gray-800 p-1 flex items-center">
+                <button
+                  onClick={() => setViewMode('classic')}
+                  className={`px-3 py-2 text-sm font-medium rounded-full transition-colors duration-200 ${
+                    viewMode === 'classic'
+                      ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
+                      : 'text-gray-600 dark:text-gray-400'
+                  }`}
+                >
+                  Classic
+                </button>
+                <button
+                  onClick={() => setViewMode('wallet')}
+                  className={`px-3 py-2 text-sm font-medium rounded-full transition-colors duration-200 ${
+                    viewMode === 'wallet'
+                      ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
+                      : 'text-gray-600 dark:text-gray-400'
+                  }`}
+                >
+                  Wallet Grid
+                </button>
+              </div>
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="hidden md:inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
+              >
+                <Plus className="w-5 h-5" />
+                Add Account
+              </button>
+            </div>
           </div>
 
           {accounts.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {accounts.map((account) => (
-                <AccountCard
-                  key={account.id}
-                  account={account}
-                  onEdit={handleEditAccount}
-                  onDelete={handleDeleteAccount}
-                />
-              ))}
+            <div
+              className={
+                viewMode === 'wallet'
+                  ? 'grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6'
+                  : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+              }
+            >
+              {accounts.map((account) =>
+                viewMode === 'wallet' ? (
+                  <AccountCardTile
+                    key={account.id}
+                    account={account}
+                    onEdit={handleEditAccount}
+                    onDelete={handleDeleteAccount}
+                  />
+                ) : (
+                  <AccountCard
+                    key={account.id}
+                    account={account}
+                    onEdit={handleEditAccount}
+                    onDelete={handleDeleteAccount}
+                  />
+                )
+              )}
             </div>
           ) : (
             <div className="text-center py-16">

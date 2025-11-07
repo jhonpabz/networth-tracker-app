@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="gradMint" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#2ecc71" />
+      <stop offset="100%" stop-color="#27ae60" />
+    </linearGradient>
+  </defs>
+  <rect x="4" y="8" width="56" height="40" rx="12" fill="url(#gradMint)" />
+  <path d="M12 24h40v4H12z" fill="#ecf9f1" opacity="0.6" />
+  <text x="50%" y="43" text-anchor="middle" font-family="'Segoe UI', 'Helvetica', 'Arial', sans-serif" font-size="22" fill="#ecf9f1" font-weight="700">m</text>
+</svg>
+

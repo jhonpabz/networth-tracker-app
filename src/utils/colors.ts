@@ -22,3 +22,54 @@ export const getColorClasses = (color: string) => {
   };
   return colorMap[color] || colorMap.blue;
 };
+
+interface TilePalette {
+  background: string;
+  badge: string;
+  subtleText: string;
+}
+
+const tilePalettes: { [key: string]: TilePalette } = {
+  emerald: {
+    background: 'bg-gradient-to-br from-emerald-500 to-emerald-600',
+    badge: 'bg-white/20 text-white',
+    subtleText: 'text-emerald-50/80',
+  },
+  blue: {
+    background: 'bg-gradient-to-br from-blue-500 to-blue-600',
+    badge: 'bg-white/20 text-white',
+    subtleText: 'text-sky-100',
+  },
+  purple: {
+    background: 'bg-gradient-to-br from-purple-500 to-purple-600',
+    badge: 'bg-white/20 text-white',
+    subtleText: 'text-violet-100',
+  },
+  orange: {
+    background: 'bg-gradient-to-br from-orange-500 to-orange-600',
+    badge: 'bg-white/20 text-white',
+    subtleText: 'text-orange-50/80',
+  },
+  pink: {
+    background: 'bg-gradient-to-br from-pink-500 to-pink-600',
+    badge: 'bg-white/20 text-white',
+    subtleText: 'text-pink-50/80',
+  },
+  teal: {
+    background: 'bg-gradient-to-br from-teal-500 to-teal-600',
+    badge: 'bg-white/20 text-white',
+    subtleText: 'text-teal-50/80',
+  },
+  indigo: {
+    background: 'bg-gradient-to-br from-indigo-500 to-indigo-600',
+    badge: 'bg-white/20 text-white',
+    subtleText: 'text-indigo-100',
+  },
+  red: {
+    background: 'bg-gradient-to-br from-red-500 to-red-600',
+    badge: 'bg-white/20 text-white',
+    subtleText: 'text-rose-50/80',
+  },
+};
+
+export const getTilePalette = (color: string): TilePalette => tilePalettes[color] || tilePalettes.blue;

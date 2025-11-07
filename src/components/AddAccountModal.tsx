@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { X, Building2, Banknote, CreditCard, Wallet, PiggyBank, Landmark, Leaf as Safe, Coins, DollarSign, TrendingUp } from 'lucide-react';
+import { X } from 'lucide-react';
 import { Account } from '../types/Account';
 import { colorOptions } from '../utils/colors';
-import { iconOptions } from '../utils/icons';
+import { iconOptions, getLucideIcon } from '../utils/icons';
 
 interface AddAccountModalProps {
   isOpen: boolean;
@@ -12,11 +12,18 @@ interface AddAccountModalProps {
 }
 
 const AddAccountModal: React.FC<AddAccountModalProps> = ({ isOpen, onClose, onSave, editingAccount }) => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    name: string;
+    balance: string;
+    color: string;
+    icon: string;
+    iconType: 'lucide' | 'image';
+  }>({
     name: '',
     balance: '',
     color: 'blue',
     icon: 'building-2',
+    iconType: 'lucide',
   });
 
   useEffect(() => {
@@ -26,6 +33,7 @@ const AddAccountModal: React.FC<AddAccountModalProps> = ({ isOpen, onClose, onSa
         balance: editingAccount.balance.toString(),
         color: editingAccount.color,
         icon: editingAccount.icon,
+        iconType: editingAccount.iconType ?? 'lucide',
       });
     } else {
       setFormData({
@@ -33,6 +41,7 @@ const AddAccountModal: React.FC<AddAccountModalProps> = ({ isOpen, onClose, onSa
         balance: '',
         color: 'blue',
         icon: 'building-2',
+        iconType: 'lucide',
       });
     }
   }, [editingAccount, isOpen]);
@@ -45,25 +54,10 @@ const AddAccountModal: React.FC<AddAccountModalProps> = ({ isOpen, onClose, onSa
         balance: parseFloat(formData.balance),
         color: formData.color,
         icon: formData.icon,
+        iconType: formData.iconType,
       });
       onClose();
     }
-  };
-
-  const getIcon = (iconName: string) => {
-    const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = {
-      'building-2': Building2,
-      'banknote': Banknote,
-      'credit-card': CreditCard,
-      'wallet': Wallet,
-      'piggy-bank': PiggyBank,
-      'landmark': Landmark,
-      'safe': Safe,
-      'coins': Coins,
-      'dollar-sign': DollarSign,
-      'trending-up': TrendingUp,
-    };
-    return iconMap[iconName] || Building2;
   };
 
   if (!isOpen) return null;
@@ -142,20 +136,26 @@ const AddAccountModal: React.FC<AddAccountModalProps> = ({ isOpen, onClose, onSa
             </label>
             <div className="grid grid-cols-5 gap-3">
               {iconOptions.map((icon) => {
-                const IconComponent = getIcon(icon.value);
+                const IconComponent = icon.type === 'lucide' ? getLucideIcon(icon.value) : undefined;
+                const isSelected = formData.icon === icon.value;
+
                 return (
                   <button
                     key={icon.value}
                     type="button"
-                    onClick={() => setFormData({ ...formData, icon: icon.value })}
+                    onClick={() => setFormData({ ...formData, icon: icon.value, iconType: icon.type })}
                     className={`p-3 rounded-lg border-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 ${
-                      formData.icon === icon.value
+                      isSelected
                         ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                         : 'border-gray-200 dark:border-gray-600'
                     }`}
                     aria-label={`Select ${icon.name} icon`}
                   >
-                    <IconComponent className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                    {icon.type === 'image' && icon.src ? (
+                      <img src={icon.src} alt={icon.name} className="w-8 h-8 object-contain mx-auto" />
+                    ) : IconComponent ? (
+                      <IconComponent className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                    ) : null}
                   </button>
                 );
               })}

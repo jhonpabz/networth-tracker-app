@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="gradDock" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f2994a" />
+      <stop offset="100%" stop-color="#d35400" />
+    </linearGradient>
+  </defs>
+  <rect x="5" y="10" width="54" height="38" rx="10" fill="url(#gradDock)" />
+  <circle cx="32" cy="32" r="13" fill="#fff2e6" opacity="0.85" />
+  <path d="M32 22a10 10 0 100 20 10 10 0 000-20zm0 4a6 6 0 016 6h-4a2 2 0 10-4 0h-4a6 6 0 016-6zm0 16a6 6 0 01-6-6h12a6 6 0 01-6 6z" fill="#d35400" />
+</svg>
+
