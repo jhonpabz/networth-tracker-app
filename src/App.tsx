@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
 import { Account } from './types/Account';
 import { useThemeProvider, ThemeContext } from './hooks/useTheme';
@@ -17,7 +17,17 @@ const App: React.FC = () => {
   const [accounts, setAccounts] = useLocalStorage<Account[]>('accounts', []);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingAccount, setEditingAccount] = useState<Account | undefined>(undefined);
-  const [viewMode, setViewMode] = useState<'classic' | 'wallet'>('classic');
+  
+  const STORAGE_KEY = 'app-view-mode';
+  const [viewMode, setViewMode] = useState<'classic' | 'wallet'>(() => {
+    const saved = typeof window !== 'undefined' && localStorage.getItem(STORAGE_KEY);
+    return (saved === 'classic' || saved === 'wallet') ? saved : 'wallet';
+  });
+  
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, viewMode);
+  }, [viewMode]);
+  
   const themeProvider = useThemeProvider();
 
   // Show loading screen while checking PIN status
