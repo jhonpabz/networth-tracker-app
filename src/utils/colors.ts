@@ -4,7 +4,7 @@ export const colorOptions = [
   { name: 'Purple', value: 'purple', gradient: 'from-purple-500 to-purple-600' },
   { name: 'Orange', value: 'orange', gradient: 'from-orange-500 to-orange-600' },
   { name: 'Pink', value: 'pink', gradient: 'from-pink-500 to-pink-600' },
-  { name: 'Teal', value: 'teal', gradient: 'from-teal-500 to-teal-600' },
+  { name: 'Teal', value: 'teal', gradient: 'from-[#05e3e8] to-[#05cfee]' },
   { name: 'Indigo', value: 'indigo', gradient: 'from-indigo-500 to-indigo-600' },
   { name: 'Red', value: 'red', gradient: 'from-red-500 to-red-600' },
 ];
@@ -16,7 +16,7 @@ export const getColorClasses = (color: string) => {
     purple: 'bg-gradient-to-br from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700',
     orange: 'bg-gradient-to-br from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700',
     pink: 'bg-gradient-to-br from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700',
-    teal: 'bg-gradient-to-br from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700',
+    teal: 'bg-gradient-to-br from-[#05e3e8] to-[#05cfee] hover:from-[#00e8f9] hover:to-[#00d7fc]',
     indigo: 'bg-gradient-to-br from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700',
     red: 'bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700',
   };
@@ -56,7 +56,7 @@ const tilePalettes: { [key: string]: TilePalette } = {
     subtleText: 'text-pink-50/80',
   },
   teal: {
-    background: 'bg-gradient-to-br from-teal-500 to-teal-600',
+    background: 'bg-gradient-to-br from-[#05e3e8] to-[#05cfee]',
     badge: 'bg-white/20 text-white',
     subtleText: 'text-teal-50/80',
   },

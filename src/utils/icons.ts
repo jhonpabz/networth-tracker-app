@@ -13,11 +13,11 @@ import {
   TrendingUp,
 } from 'lucide-react';
 
-import mintWallet from '../assets/icons/m-wallet.svg';
-import docking from '../assets/icons/docking.svg';
-import goWallet from '../assets/icons/go-wallet.svg';
-import ownBank from '../assets/icons/own-bank.svg';
-import timeDeposit from '../assets/icons/time-deposit.svg';
+import maribank from '../assets/icons/maribank.png';
+import bdo from '../assets/icons/bdo.png';
+import gotyme from '../assets/icons/gotyme.png';
+import maya from '../assets/icons/maya.png';
+
 
 export type IconType = 'lucide' | 'image';
 
@@ -52,11 +52,11 @@ export const iconOptions: IconOption[] = [
   { name: 'Coins', value: 'coins', type: 'lucide' },
   { name: 'Dollar Sign', value: 'dollar-sign', type: 'lucide' },
   { name: 'Trending Up', value: 'trending-up', type: 'lucide' },
-  { name: 'Mint Wallet', value: 'mint-wallet', type: 'image', src: mintWallet },
-  { name: 'Docking Wallet', value: 'docking-wallet', type: 'image', src: docking },
-  { name: 'Go Wallet', value: 'go-wallet', type: 'image', src: goWallet },
-  { name: 'Own Bank', value: 'own-bank', type: 'image', src: ownBank },
-  { name: 'Time Deposit', value: 'time-deposit', type: 'image', src: timeDeposit },
+  { name: 'Maribank', value: 'Maribank', type: 'image', src: maribank },
+  { name: 'BDO', value: 'bdo', type: 'image', src: bdo },
+  { name: 'GOtyme', value: 'gotyme', type: 'image', src: gotyme },
+  { name: 'Maya', value: 'Maya', type: 'image', src: maya },
+
 ];
 
 export const getIconOption = (value: string): IconOption | undefined =>

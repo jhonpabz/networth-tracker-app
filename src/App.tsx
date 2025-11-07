@@ -24,9 +24,9 @@ const App: React.FC = () => {
   if (isLoading) {
     return (
       <ThemeContext.Provider value={themeProvider}>
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
+        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
           <div className="text-center">
-            <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <div className="w-16 h-16 mx-auto mb-4 border-4 border-blue-500 rounded-full border-t-transparent animate-spin"></div>
             <p className="text-gray-600 dark:text-gray-400">Loading...</p>
           </div>
         </div>
@@ -95,25 +95,25 @@ const App: React.FC = () => {
 
   return (
     <ThemeContext.Provider value={themeProvider}>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
+      <div className="min-h-screen transition-colors duration-300 bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <ThemeToggle />
         
-        <div className="container mx-auto px-4 py-8 max-w-7xl">
-          <div className="mb-8">
+        <div className="container px-4 py-8 mx-auto max-w-7xl">
+          <div className="mb-2">
             <NetWorthDisplay totalNetWorth={totalNetWorth} accountCount={accounts.length} />
           </div>
 
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8">
+          <div className="flex flex-col gap-4 mb-8 md:flex-row md:items-center md:justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+              {/* <h2 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">
                 Your Accounts
               </h2>
               <p className="text-gray-600 dark:text-gray-400">
-                Manage your savings accounts and track your financial growth
-              </p>
+              Your Accounts
+              </p> */}
             </div>
-            <div className="flex items-center gap-3 self-start md:self-center">
-              <div className="rounded-full bg-gray-100 dark:bg-gray-800 p-1 flex items-center">
+            <div className="flex items-center self-start gap-3 md:self-center">
+              <div className="flex items-center p-1 bg-gray-100 rounded-full dark:bg-gray-800">
                 <button
                   onClick={() => setViewMode('classic')}
                   className={`px-3 py-2 text-sm font-medium rounded-full transition-colors duration-200 ${
@@ -137,7 +137,7 @@ const App: React.FC = () => {
               </div>
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="hidden md:inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
+                className="items-center hidden gap-2 px-6 py-3 font-medium text-white transition-all duration-200 bg-blue-600 shadow-lg md:inline-flex hover:bg-blue-700 rounded-xl hover:shadow-xl hover:scale-105"
               >
                 <Plus className="w-5 h-5" />
                 Add Account
@@ -172,20 +172,20 @@ const App: React.FC = () => {
               )}
             </div>
           ) : (
-            <div className="text-center py-16">
+            <div className="py-16 text-center">
               <div className="max-w-md mx-auto">
-                <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <div className="flex items-center justify-center w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl">
                   <Plus className="w-12 h-12 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                <h3 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">
                   No accounts yet
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-6">
+                <p className="mb-6 text-gray-600 dark:text-gray-400">
                   Start tracking your net worth by adding your first account
                 </p>
                 <button
                   onClick={() => setIsModalOpen(true)}
-                  className="hidden md:inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
+                  className="items-center hidden gap-2 px-6 py-3 font-medium text-white transition-all duration-200 bg-blue-600 shadow-lg md:inline-flex hover:bg-blue-700 rounded-xl hover:shadow-xl hover:scale-105"
                 >
                   <Plus className="w-5 h-5" />
                   Add Your First Account
@@ -204,7 +204,7 @@ const App: React.FC = () => {
           {/* Mobile Floating Action Button */}
           <button
             onClick={() => setIsModalOpen(true)}
-            className="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center z-40 hover:scale-105"
+            className="fixed z-40 flex items-center justify-center text-white transition-all duration-200 bg-blue-600 rounded-full shadow-lg md:hidden bottom-6 right-6 w-14 h-14 hover:bg-blue-700 hover:shadow-xl hover:scale-105"
             aria-label="Add Account"
           >
             <Plus className="w-6 h-6" />

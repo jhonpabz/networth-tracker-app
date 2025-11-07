@@ -26,22 +26,23 @@ const AccountCardTile: React.FC<AccountCardTileProps> = ({ account, onEdit, onDe
     : undefined;
   const iconSrc = resolvedIconType === 'image' ? iconOption?.src : undefined;
   const FallbackIcon = IconComponent ?? Building2;
-  const subtitle = iconOption?.type === 'image' ? iconOption.name : 'Savings Wallet';
+
 
   return (
     <div className={`group relative overflow-hidden rounded-3xl shadow-lg transition-transform duration-300 hover:-translate-y-1`}>
       <div className={`${palette.background} p-5 h-full flex flex-col justify-between min-h-[190px]`}>
-        <div className="absolute top-4 right-4 flex gap-2">
+        <div className="absolute flex gap-2 top-4 right-4">
+          
           <button
             onClick={() => onEdit(account)}
-            className="p-2 rounded-xl bg-white/15 backdrop-blur-md text-white hover:bg-white/25 transition-colors duration-200"
+            className="p-2 text-white transition-colors duration-200 rounded-xl bg-white/15 backdrop-blur-md hover:bg-white/25"
             aria-label="Edit account"
           >
             <Edit2 className="w-4 h-4" />
           </button>
           <button
             onClick={() => onDelete(account.id)}
-            className="p-2 rounded-xl bg-white/15 backdrop-blur-md text-white hover:bg-red-500/60 transition-colors duration-200"
+            className="p-2 text-white transition-colors duration-200 rounded-xl bg-white/15 backdrop-blur-md hover:bg-red-500/60"
             aria-label="Delete account"
           >
             <Trash2 className="w-4 h-4" />
@@ -49,33 +50,27 @@ const AccountCardTile: React.FC<AccountCardTileProps> = ({ account, onEdit, onDe
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center">
+          <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md">
             {resolvedIconType === 'image' && iconSrc ? (
-              <img src={iconSrc} alt={`${account.name} icon`} className="w-10 h-10 object-contain" />
+              <img src={iconSrc} alt={`${account.name} icon`} className="object-contain w-10 h-10" />
             ) : (
               <FallbackIcon className="w-6 h-6 text-white" />
             )}
           </div>
           <div>
-            <span className={`text-xs font-semibold uppercase tracking-wide ${palette.subtleText}`}>
-              {subtitle}
-            </span>
-            <h3 className="mt-1 text-xl font-semibold text-white truncate max-w-[140px]">
-              {account.name}
-            </h3>
           </div>
         </div>
 
         <div className="mt-8">
           <p className="text-[13px] uppercase tracking-wide text-white/70">
-            Current Balance
+          {account.name}
           </p>
-          <p className="text-3xl font-bold text-white mt-1">
+          <p className="mt-1 text-xl font-semibold text-white">
             {formatCurrency(account.balance)}
           </p>
         </div>
       </div>
-      <div className="pointer-events-none absolute -bottom-12 -right-12 h-40 w-40 rounded-full bg-white/10" />
+      <div className="absolute w-40 h-40 rounded-full pointer-events-none -bottom-12 -right-12 bg-white/10" />
     </div>
   );
 };
