@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Trash2 } from 'lucide-react';
 import { GoTradeTransaction } from '../../types/GoTrade';
 import { formatCurrency } from '../../utils/formatCurrency';
+import DeleteDepositModal from './DeleteDepositModal';
 
 interface GoTradeTransactionListProps {
   transactions: GoTradeTransaction[];
@@ -20,6 +21,15 @@ const GoTradeTransactionList: React.FC<GoTradeTransactionListProps> = ({
   transactions,
   onDelete,
 }) => {
+  const [pendingDelete, setPendingDelete] = useState<GoTradeTransaction | null>(null);
+
+  const handleConfirmDelete = () => {
+    if (pendingDelete && onDelete) {
+      onDelete(pendingDelete.id);
+    }
+    setPendingDelete(null);
+  };
+
   if (transactions.length === 0) {
     return (
       <div className="py-12 text-center border border-dashed border-gray-300 dark:border-gray-700 rounded-2xl">
@@ -48,7 +58,7 @@ const GoTradeTransactionList: React.FC<GoTradeTransactionListProps> = ({
             </span>
             {onDelete && (
               <button
-                onClick={() => onDelete(tx.id)}
+                onClick={() => setPendingDelete(tx)}
                 className="p-2 text-gray-400 transition-colors rounded-lg hover:text-red-500 hover:bg-red-500/10"
                 aria-label="Delete transaction"
               >
@@ -58,6 +68,14 @@ const GoTradeTransactionList: React.FC<GoTradeTransactionListProps> = ({
           </div>
         </div>
       ))}
+
+      <DeleteDepositModal
+        isOpen={pendingDelete !== null}
+        dateLabel={pendingDelete ? formatDate(pendingDelete.date) : ''}
+        amountPhp={pendingDelete?.amountPhp ?? 0}
+        onClose={() => setPendingDelete(null)}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 };

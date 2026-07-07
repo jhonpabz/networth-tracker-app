@@ -55,7 +55,7 @@ const AddGoTradeModal: React.FC<AddGoTradeModalProps> = ({ isOpen, onClose, onSa
               id="gotrade-date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className={inputClass}
+              className={`${inputClass} w-full max-w-[11.5rem] block`}
               required
             />
           </div>
