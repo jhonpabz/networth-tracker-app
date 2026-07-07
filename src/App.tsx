@@ -7,6 +7,7 @@ import { usePin } from './hooks/usePin';
 import GlobalNav from './components/GlobalNav';
 import NetWorthPage from './components/NetWorthPage';
 import InvestmentsPage from './components/InvestmentsPage';
+import GoTradePage from './components/GoTradePage';
 import ThemeToggle from './components/ThemeToggle';
 import PinSetup from './components/PinSetup';
 import PinEntry from './components/PinEntry';
@@ -18,7 +19,9 @@ const App: React.FC = () => {
   const [accounts, setAccounts] = useLocalStorage<Account[]>('accounts', []);
   const [activeTab, setActiveTab] = useState<GlobalTab>(() => {
     const saved = localStorage.getItem(GLOBAL_TAB_KEY);
-    return saved === 'networth' || saved === 'investments' ? saved : 'networth';
+    return saved === 'networth' || saved === 'investments' || saved === 'gotrade'
+      ? saved
+      : 'networth';
   });
 
   const themeProvider = useThemeProvider();
@@ -102,8 +105,10 @@ const App: React.FC = () => {
               onUpdateAccount={handleUpdateAccount}
               onDeleteAccount={handleDeleteAccount}
             />
-          ) : (
+          ) : activeTab === 'investments' ? (
             <InvestmentsPage />
+          ) : (
+            <GoTradePage />
           )}
         </div>
       </div>

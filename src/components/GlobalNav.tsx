@@ -9,6 +9,7 @@ interface GlobalNavProps {
 const tabs: { id: GlobalTab; label: string }[] = [
   { id: 'networth', label: 'Net Worth' },
   { id: 'investments', label: 'Investments' },
+  { id: 'gotrade', label: 'GoTrade VOO' },
 ];
 
 const GlobalNav: React.FC<GlobalNavProps> = ({ activeTab, onTabChange }) => {
