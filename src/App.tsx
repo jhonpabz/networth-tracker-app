@@ -4,7 +4,7 @@ import { GlobalTab } from './types/Investment';
 import { useThemeProvider, ThemeContext } from './hooks/useTheme';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { usePin } from './hooks/usePin';
-import GlobalNav from './components/GlobalNav';
+import AppHeader from './components/AppHeader';
 import NetWorthPage from './components/NetWorthPage';
 import InvestmentsPage from './components/InvestmentsPage';
 import GoTradePage from './components/GoTradePage';
@@ -61,7 +61,7 @@ const App: React.FC = () => {
       <ThemeContext.Provider value={themeProvider}>
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
           <div className="text-center">
-            <div className="w-16 h-16 mx-auto mb-4 border-4 border-blue-500 rounded-full border-t-transparent animate-spin"></div>
+            <div className="w-16 h-16 mx-auto mb-4 border-4 border-blue-500 rounded-full border-t-transparent animate-spin" />
             <p className="text-gray-600 dark:text-gray-400">Loading...</p>
           </div>
         </div>
@@ -96,10 +96,9 @@ const App: React.FC = () => {
     <ThemeContext.Provider value={themeProvider}>
       <div className="min-h-screen transition-colors duration-300 bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <ThemeToggle />
+        <AppHeader activeTab={activeTab} onTabChange={handleTabChange} />
 
-        <div className="container px-4 py-8 mx-auto max-w-7xl">
-          <GlobalNav activeTab={activeTab} onTabChange={handleTabChange} />
-
+        <div className="container px-4 pt-11 pb-8 mx-auto max-w-7xl">
           {activeTab === 'networth' ? (
             <NetWorthPage
               accounts={accounts}
