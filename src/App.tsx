@@ -8,19 +8,21 @@ import GlobalNav from './components/GlobalNav';
 import NetWorthPage from './components/NetWorthPage';
 import InvestmentsPage from './components/InvestmentsPage';
 import GoTradePage from './components/GoTradePage';
+import PlannerPage from './components/PlannerPage';
 import ThemeToggle from './components/ThemeToggle';
 import PinSetup from './components/PinSetup';
 import PinEntry from './components/PinEntry';
 
 const GLOBAL_TAB_KEY = 'global-tab';
+const VALID_TABS: GlobalTab[] = ['networth', 'investments', 'gotrade', 'planner'];
 
 const App: React.FC = () => {
   const { hasPin, isAuthenticated, isLoading, securityQuestion, setPin, verifyPin, verifySecurityAnswer, resetPin } = usePin();
   const [accounts, setAccounts] = useLocalStorage<Account[]>('accounts', []);
   const [activeTab, setActiveTab] = useState<GlobalTab>(() => {
     const saved = localStorage.getItem(GLOBAL_TAB_KEY);
-    return saved === 'networth' || saved === 'investments' || saved === 'gotrade'
-      ? saved
+    return saved && VALID_TABS.includes(saved as GlobalTab)
+      ? (saved as GlobalTab)
       : 'networth';
   });
 
@@ -107,8 +109,10 @@ const App: React.FC = () => {
             />
           ) : activeTab === 'investments' ? (
             <InvestmentsPage />
-          ) : (
+          ) : activeTab === 'gotrade' ? (
             <GoTradePage />
+          ) : (
+            <PlannerPage />
           )}
         </div>
       </div>
