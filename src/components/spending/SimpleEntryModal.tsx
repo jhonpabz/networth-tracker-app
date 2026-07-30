@@ -125,9 +125,9 @@ const SimpleEntryModal: React.FC<SimpleEntryModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full p-2 text-zinc-400 transition-colors hover:bg-white/10 hover:text-white"
+            className="p-2 transition-colors rounded-full text-zinc-400 hover:bg-white/10 hover:text-white"
           >
-            <X className="h-5 w-5" />
+            <X className="w-5 h-5" />
           </button>
           <h2 className="text-sm font-semibold tracking-wide text-zinc-100">
             {category}
@@ -171,7 +171,7 @@ const SimpleEntryModal: React.FC<SimpleEntryModalProps> = ({
           </p>
         </div>
 
-        <div className="mx-4 mb-3 rounded-xl border border-white/10 bg-white/5 px-3 py-2">
+        <div className="px-3 py-2 mx-4 mb-3 border rounded-xl border-white/10 bg-white/5">
           <label className="sr-only" htmlFor="spending-note">
             Note
           </label>
@@ -181,7 +181,7 @@ const SimpleEntryModal: React.FC<SimpleEntryModalProps> = ({
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder="Note: Coffee, groceries…"
-            className="w-full bg-transparent text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none"
+            className="w-full text-base bg-transparent text-zinc-200 placeholder:text-zinc-500 focus:outline-none"
           />
         </div>
 
@@ -223,9 +223,9 @@ const SimpleEntryModal: React.FC<SimpleEntryModalProps> = ({
                 }`}
               >
                 {key === 'back' ? (
-                  <Delete className="h-5 w-5" />
+                  <Delete className="w-5 h-5" />
                 ) : key === '=' ? (
-                  <Equal className="h-5 w-5" />
+                  <Equal className="w-5 h-5" />
                 ) : (
                   key
                 )}
