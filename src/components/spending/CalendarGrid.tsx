@@ -44,8 +44,8 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
   const todayKey = toDateKey(new Date());
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white/80 p-3 shadow-sm backdrop-blur-sm dark:border-white/10 dark:bg-white/5 sm:p-4">
-      <div className="mb-2 grid grid-cols-7 gap-1">
+    <div className="p-3 border border-gray-200 shadow-sm rounded-2xl bg-white/80 backdrop-blur-sm dark:border-white/10 dark:bg-white/5 sm:p-4">
+      <div className="grid grid-cols-7 gap-1 mb-2">
         {WEEKDAYS.map((d) => (
           <div
             key={d}
@@ -59,7 +59,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
       <div className="grid grid-cols-7 gap-1">
         {cells.map((cell, idx) => {
           if (!cell.day || !cell.dateKey) {
-            return <div key={`empty-${idx}`} className="min-h-[4.25rem]" />;
+            return <div key={`empty-${idx}`} className="min-h-[3.25rem] max-h-[3.5rem]" />;
           }
 
           const breakdown = dailyMap.get(cell.dateKey);
@@ -71,7 +71,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
               key={cell.dateKey}
               type="button"
               onClick={() => onSelectDate(cell.dateKey!)}
-              className={`flex min-h-[4.25rem] flex-col items-center rounded-xl px-0.5 py-1 transition-colors ${
+              className={`flex min-h-[3.25rem] max-h-[3.5rem] flex-col items-center rounded-xl px-0.5 py-1 transition-colors ${
                 isSelected
                   ? 'bg-amber-400 text-zinc-900 shadow-md'
                   : isToday
