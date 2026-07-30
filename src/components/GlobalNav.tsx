@@ -1,41 +1,54 @@
 import React from 'react';
+import {
+  Wallet,
+  TrendingUp,
+  LineChart,
+  CalendarCheck,
+  Receipt,
+} from 'lucide-react';
 import { GlobalTab } from '../types/Investment';
 
 interface GlobalNavProps {
   activeTab: GlobalTab;
   onTabChange: (tab: GlobalTab) => void;
-  className?: string;
 }
 
-const tabs: { id: GlobalTab; label: string }[] = [
-  { id: 'networth', label: 'Net Worth' },
-  { id: 'investments', label: 'Investments' },
-  { id: 'gotrade', label: 'GoTrade VOO' },
-  { id: 'planner', label: 'Planner' },
+const tabs: { id: GlobalTab; label: string; Icon: typeof Wallet }[] = [
+  { id: 'networth', label: 'Net Worth', Icon: Wallet },
+  { id: 'investments', label: 'Invest', Icon: TrendingUp },
+  { id: 'gotrade', label: 'VOO', Icon: LineChart },
+  { id: 'planner', label: 'Planner', Icon: CalendarCheck },
+  { id: 'spending', label: 'Spending', Icon: Receipt },
 ];
 
-const GlobalNav: React.FC<GlobalNavProps> = ({ activeTab, onTabChange, className = '' }) => {
+const GlobalNav: React.FC<GlobalNavProps> = ({ activeTab, onTabChange }) => {
   return (
     <nav
-      className={`border-b border-gray-200 dark:border-gray-700/60 ${className}`}
+      className="fixed bottom-0 left-0 right-0 z-40 flex justify-center px-3 pointer-events-none pb-[max(0.75rem,env(safe-area-inset-bottom))]"
       aria-label="Main navigation"
     >
-      <div className="flex gap-1 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:gap-2">
-        {tabs.map((tab) => {
-          const isActive = activeTab === tab.id;
+      <div className="pointer-events-auto flex w-full max-w-md items-stretch gap-0.5 rounded-full border border-white/10 bg-zinc-900/70 px-1.5 py-1.5 shadow-2xl backdrop-blur-md sm:max-w-lg sm:gap-1 sm:px-2">
+        {tabs.map(({ id, label, Icon }) => {
+          const isActive = activeTab === id;
           return (
             <button
-              key={tab.id}
+              key={id}
               type="button"
-              onClick={() => onTabChange(tab.id)}
+              onClick={() => onTabChange(id)}
               aria-current={isActive ? 'page' : undefined}
-              className={`shrink-0 whitespace-nowrap border-b-2 px-2.5 py-2 text-xs font-medium tracking-wide transition-colors duration-200 -mb-px sm:px-3 sm:text-sm ${
+              className={`flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-full px-1 py-2 transition-all duration-200 sm:px-2 ${
                 isActive
-                  ? 'border-blue-500 text-gray-900 dark:text-white'
-                  : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:text-gray-300'
+                  ? 'bg-white/15 text-white shadow-inner'
+                  : 'text-zinc-400 hover:bg-white/5 hover:text-zinc-200'
               }`}
             >
-              {tab.label}
+              <Icon
+                className={`h-5 w-5 shrink-0 ${isActive ? 'text-amber-400' : ''}`}
+                strokeWidth={isActive ? 2.25 : 1.75}
+              />
+              <span className="max-w-full truncate text-[10px] font-medium leading-tight tracking-wide sm:text-[11px]">
+                {label}
+              </span>
             </button>
           );
         })}

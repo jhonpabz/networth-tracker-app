@@ -4,17 +4,18 @@ import { GlobalTab } from './types/Investment';
 import { useThemeProvider, ThemeContext } from './hooks/useTheme';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { usePin } from './hooks/usePin';
-import AppHeader from './components/AppHeader';
+import GlobalNav from './components/GlobalNav';
 import NetWorthPage from './components/NetWorthPage';
 import InvestmentsPage from './components/InvestmentsPage';
 import GoTradePage from './components/GoTradePage';
 import PlannerPage from './components/PlannerPage';
+import SpendingPage from './components/spending/SpendingPage';
 import ThemeToggle from './components/ThemeToggle';
 import PinSetup from './components/PinSetup';
 import PinEntry from './components/PinEntry';
 
 const GLOBAL_TAB_KEY = 'global-tab';
-const VALID_TABS: GlobalTab[] = ['networth', 'investments', 'gotrade', 'planner'];
+const VALID_TABS: GlobalTab[] = ['networth', 'investments', 'gotrade', 'planner', 'spending'];
 
 const App: React.FC = () => {
   const { hasPin, isAuthenticated, isLoading, securityQuestion, setPin, verifyPin, verifySecurityAnswer, resetPin } = usePin();
@@ -96,9 +97,8 @@ const App: React.FC = () => {
     <ThemeContext.Provider value={themeProvider}>
       <div className="min-h-screen transition-colors duration-300 bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <ThemeToggle />
-        <AppHeader activeTab={activeTab} onTabChange={handleTabChange} />
 
-        <div className="container px-4 pt-11 pb-8 mx-auto max-w-7xl">
+        <div className="container px-4 pt-6 pb-28 mx-auto max-w-7xl">
           {activeTab === 'networth' ? (
             <NetWorthPage
               accounts={accounts}
@@ -110,10 +110,14 @@ const App: React.FC = () => {
             <InvestmentsPage />
           ) : activeTab === 'gotrade' ? (
             <GoTradePage />
-          ) : (
+          ) : activeTab === 'planner' ? (
             <PlannerPage />
+          ) : (
+            <SpendingPage />
           )}
         </div>
+
+        <GlobalNav activeTab={activeTab} onTabChange={handleTabChange} />
       </div>
     </ThemeContext.Provider>
   );
