@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Wallet,
-  TrendingUp,
-  LineChart,
-  CalendarCheck,
-  Receipt,
-} from 'lucide-react';
+import { Wallet, TrendingUp, Receipt, CalendarCheck } from 'lucide-react';
 import { GlobalTab } from '../types/Investment';
 
 interface GlobalNavProps {
@@ -15,10 +9,9 @@ interface GlobalNavProps {
 
 const tabs: { id: GlobalTab; label: string; Icon: typeof Wallet }[] = [
   { id: 'networth', label: 'Net Worth', Icon: Wallet },
-  { id: 'investments', label: 'Invest', Icon: TrendingUp },
-  { id: 'gotrade', label: 'VOO', Icon: LineChart },
-  { id: 'planner', label: 'Planner', Icon: CalendarCheck },
+  { id: 'invest', label: 'Invest', Icon: TrendingUp },
   { id: 'spending', label: 'Spending', Icon: Receipt },
+  { id: 'planner', label: 'Planner', Icon: CalendarCheck },
 ];
 
 const GlobalNav: React.FC<GlobalNavProps> = ({ activeTab, onTabChange }) => {
@@ -27,7 +20,7 @@ const GlobalNav: React.FC<GlobalNavProps> = ({ activeTab, onTabChange }) => {
       className="fixed bottom-0 left-0 right-0 z-40 flex justify-center px-3 pointer-events-none pb-[max(0.75rem,env(safe-area-inset-bottom))]"
       aria-label="Main navigation"
     >
-      <div className="pointer-events-auto flex w-full max-w-md items-stretch gap-0.5 rounded-full border border-white/10 bg-zinc-900/70 px-1.5 py-1.5 shadow-2xl backdrop-blur-md sm:max-w-lg sm:gap-1 sm:px-2">
+      <div className="pointer-events-auto flex w-full max-w-md items-stretch gap-0.5 rounded-full border border-white/10 bg-zinc-900/45 px-1.5 py-1.5 shadow-2xl backdrop-blur-md sm:max-w-lg sm:gap-1 sm:px-2">
         {tabs.map(({ id, label, Icon }) => {
           const isActive = activeTab === id;
           return (

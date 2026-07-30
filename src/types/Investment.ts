@@ -55,5 +55,6 @@ export interface PerformanceDataPoint {
 }
 
 export type InvestmentViewMode = 'performance' | 'allocation';
-export type GlobalTab = 'networth' | 'investments' | 'gotrade' | 'planner' | 'spending';
+export type GlobalTab = 'networth' | 'invest' | 'spending' | 'planner';
+export type InvestSubTab = 'dragonfi' | 'gotrade';
 export type PerformanceTimeframe = '1W' | '1M' | '1Y';

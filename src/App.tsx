@@ -6,8 +6,7 @@ import { useLocalStorage } from './hooks/useLocalStorage';
 import { usePin } from './hooks/usePin';
 import GlobalNav from './components/GlobalNav';
 import NetWorthPage from './components/NetWorthPage';
-import InvestmentsPage from './components/InvestmentsPage';
-import GoTradePage from './components/GoTradePage';
+import InvestPage from './components/InvestPage';
 import PlannerPage from './components/PlannerPage';
 import SpendingPage from './components/spending/SpendingPage';
 import ThemeToggle from './components/ThemeToggle';
@@ -15,17 +14,28 @@ import PinSetup from './components/PinSetup';
 import PinEntry from './components/PinEntry';
 
 const GLOBAL_TAB_KEY = 'global-tab';
-const VALID_TABS: GlobalTab[] = ['networth', 'investments', 'gotrade', 'planner', 'spending'];
+const VALID_TABS: GlobalTab[] = ['networth', 'invest', 'spending', 'planner'];
+
+function resolveInitialTab(): GlobalTab {
+  const saved = localStorage.getItem(GLOBAL_TAB_KEY);
+  if (saved && VALID_TABS.includes(saved as GlobalTab)) {
+    return saved as GlobalTab;
+  }
+  // Migrate previous tab ids into the new Invest hub
+  if (saved === 'investments' || saved === 'gotrade') {
+    if (saved === 'gotrade') {
+      localStorage.setItem('invest-subtab', 'gotrade');
+    }
+    localStorage.setItem(GLOBAL_TAB_KEY, 'invest');
+    return 'invest';
+  }
+  return 'networth';
+}
 
 const App: React.FC = () => {
   const { hasPin, isAuthenticated, isLoading, securityQuestion, setPin, verifyPin, verifySecurityAnswer, resetPin } = usePin();
   const [accounts, setAccounts] = useLocalStorage<Account[]>('accounts', []);
-  const [activeTab, setActiveTab] = useState<GlobalTab>(() => {
-    const saved = localStorage.getItem(GLOBAL_TAB_KEY);
-    return saved && VALID_TABS.includes(saved as GlobalTab)
-      ? (saved as GlobalTab)
-      : 'networth';
-  });
+  const [activeTab, setActiveTab] = useState<GlobalTab>(resolveInitialTab);
 
   const themeProvider = useThemeProvider();
 
@@ -106,14 +116,12 @@ const App: React.FC = () => {
               onUpdateAccount={handleUpdateAccount}
               onDeleteAccount={handleDeleteAccount}
             />
-          ) : activeTab === 'investments' ? (
-            <InvestmentsPage />
-          ) : activeTab === 'gotrade' ? (
-            <GoTradePage />
-          ) : activeTab === 'planner' ? (
-            <PlannerPage />
-          ) : (
+          ) : activeTab === 'invest' ? (
+            <InvestPage />
+          ) : activeTab === 'spending' ? (
             <SpendingPage />
+          ) : (
+            <PlannerPage />
           )}
         </div>
 

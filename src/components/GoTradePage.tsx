@@ -35,10 +35,10 @@ const GoTradePage: React.FC = () => {
 
       <button
         onClick={() => setIsModalOpen(true)}
-        className="fixed z-40 flex items-center justify-center text-white transition-all duration-200 bg-blue-600 rounded-full shadow-lg bottom-6 right-6 w-14 h-14 hover:bg-blue-700 hover:shadow-xl hover:scale-105"
+        className="fixed bottom-24 right-4 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-amber-400 text-zinc-900 shadow-2xl transition-transform hover:scale-105 hover:bg-amber-300 active:scale-95 sm:right-8"
         aria-label="Add deposit"
       >
-        <Plus className="w-6 h-6" />
+        <Plus className="h-7 w-7" strokeWidth={2.5} />
       </button>
     </>
   );
