@@ -17,7 +17,7 @@ const DragonfiFundHeroCard: React.FC<DragonfiFundHeroCardProps> = ({
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-lg font-medium text-gray-300">
-            Dragonfi Fund - PHP
+            Dragonfi Fund Port
           </h1>
           <div className="flex items-center space-x-2">
             <TrendingUp className="w-5 h-5 text-emerald-400" />
