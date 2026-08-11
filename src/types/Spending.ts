@@ -25,11 +25,14 @@ export interface MonthlySummary {
 export const SPENDING_CATEGORIES = [
   'Foods',
   'Tiktok',
+  'Water',
   'Coffee',
   'Transport',
   'Health',
   'Transfer',
   'Other',
 ] as const;
+
+export const INCOME_CATEGORY = '+Balance';
 
 export type SpendingCategory = (typeof SPENDING_CATEGORIES)[number];

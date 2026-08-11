@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Delete, Equal, X } from 'lucide-react';
-import { SPENDING_CATEGORIES, TransactionType, INCOME_CATEGORY } from '../../types/Spending';
+import {
+  INCOME_CATEGORY,
+  SPENDING_CATEGORIES,
+  TransactionEntry,
+} from '../../types/Spending';
 import { evaluateExpression } from '../../utils/spendingCalculations';
-import { AddTransactionInput } from '../../hooks/useSpending';
+import { UpdateTransactionInput } from '../../hooks/useSpending';
 
-interface SimpleEntryModalProps {
-  isOpen: boolean;
+interface EditTransactionModalProps {
+  transaction: TransactionEntry | null;
   onClose: () => void;
-  onSave: (input: AddTransactionInput) => void;
-  defaultDate?: string;
+  onSave: (id: string, input: UpdateTransactionInput) => void;
 }
 
 const KEYS = [
@@ -18,32 +21,33 @@ const KEYS = [
   ['0', '.', '±', '='],
 ] as const;
 
-const SimpleEntryModal: React.FC<SimpleEntryModalProps> = ({
-  isOpen,
+const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
+  transaction,
   onClose,
   onSave,
-  defaultDate,
 }) => {
-  const [type, setType] = useState<TransactionType>('expense');
-  const [category, setCategory] = useState<string>(SPENDING_CATEGORIES[0]);
+  const isOpen = transaction !== null;
+  const isIncome = transaction?.type === 'income';
 
-  const visibleCategories =
-    type === 'income' ? [INCOME_CATEGORY] : [...SPENDING_CATEGORIES];
+  const [category, setCategory] = useState('');
   const [note, setNote] = useState('');
   const [expression, setExpression] = useState('0');
   const [justEvaluated, setJustEvaluated] = useState(false);
 
+  const visibleCategories = isIncome
+    ? [INCOME_CATEGORY]
+    : [...SPENDING_CATEGORIES];
+
   useEffect(() => {
-    if (isOpen) {
-      setType('expense');
-      setCategory(SPENDING_CATEGORIES[0]);
-      setNote('');
-      setExpression('0');
+    if (transaction) {
+      setCategory(transaction.category);
+      setNote(transaction.note);
+      setExpression(String(transaction.amount));
       setJustEvaluated(false);
     }
-  }, [isOpen]);
+  }, [transaction]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !transaction) return null;
 
   const appendDigit = (digit: string) => {
     setExpression((prev) => {
@@ -104,12 +108,10 @@ const SimpleEntryModal: React.FC<SimpleEntryModalProps> = ({
     const amount = evaluateExpression(expression);
     if (amount === null || amount <= 0) return;
 
-    onSave({
+    onSave(transaction.id, {
       amount: Math.abs(amount),
-      type,
       category,
       note,
-      date: defaultDate,
     });
     onClose();
   };
@@ -133,61 +135,28 @@ const SimpleEntryModal: React.FC<SimpleEntryModalProps> = ({
             <X className="w-5 h-5" />
           </button>
           <h2 className="text-sm font-semibold tracking-wide text-zinc-100">
-            {category}
+            Edit {isIncome ? 'Balance' : 'Expense'}
           </h2>
           <div className="w-9" />
-        </div>
-
-        <div className="flex gap-2 px-4 pb-3">
-          <button
-            type="button"
-            onClick={() => {
-              setType('expense');
-              if (category === INCOME_CATEGORY) {
-                setCategory(SPENDING_CATEGORIES[0]);
-              }
-            }}
-            className={`flex-1 rounded-full py-2 text-sm font-semibold transition-colors ${
-              type === 'expense'
-                ? 'bg-rose-500/20 text-rose-400 ring-1 ring-rose-500/40'
-                : 'bg-white/5 text-zinc-400 hover:bg-white/10'
-            }`}
-          >
-            Expense −
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setType('income');
-              setCategory(INCOME_CATEGORY);
-            }}
-            className={`flex-1 rounded-full py-2 text-sm font-semibold transition-colors ${
-              type === 'income'
-                ? 'bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-500/40'
-                : 'bg-white/5 text-zinc-400 hover:bg-white/10'
-            }`}
-          >
-            Balance +
-          </button>
         </div>
 
         <div className="px-5 py-4 text-right">
           <p
             className={`truncate text-4xl font-semibold tracking-tight tabular-nums ${
-              type === 'income' ? 'text-emerald-400' : 'text-zinc-50'
+              isIncome ? 'text-emerald-400' : 'text-zinc-50'
             }`}
           >
-            {type === 'income' ? '+' : '−'}
+            {isIncome ? '+' : '−'}
             {expression}
           </p>
         </div>
 
         <div className="px-3 py-2 mx-4 mb-3 border rounded-xl border-white/10 bg-white/5">
-          <label className="sr-only" htmlFor="spending-note">
+          <label className="sr-only" htmlFor="edit-spending-note">
             Note
           </label>
           <input
-            id="spending-note"
+            id="edit-spending-note"
             type="text"
             value={note}
             onChange={(e) => setNote(e.target.value)}
@@ -250,12 +219,12 @@ const SimpleEntryModal: React.FC<SimpleEntryModalProps> = ({
             type="button"
             onClick={handleSubmit}
             className={`w-full rounded-2xl py-3.5 text-sm font-semibold transition-colors ${
-              type === 'income'
+              isIncome
                 ? 'bg-emerald-500 text-white hover:bg-emerald-400'
                 : 'bg-rose-500 text-white hover:bg-rose-400'
             }`}
           >
-            Save {type === 'income' ? 'Balance' : 'Expense'}
+            Save Changes
           </button>
         </div>
       </div>
@@ -263,4 +232,4 @@ const SimpleEntryModal: React.FC<SimpleEntryModalProps> = ({
   );
 };
 
-export default SimpleEntryModal;
+export default EditTransactionModal;

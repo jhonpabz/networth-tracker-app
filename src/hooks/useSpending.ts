@@ -5,6 +5,7 @@ import {
   computeDailyBreakdowns,
   computeMonthlySummary,
   filterByDateKey,
+  filterByMonth,
 } from '../utils/spendingCalculations';
 
 const STORAGE_KEY = 'spending_transactions';
@@ -17,6 +18,12 @@ export interface AddTransactionInput {
   category: string;
   note: string;
   date?: string;
+}
+
+export interface UpdateTransactionInput {
+  amount: number;
+  category: string;
+  note: string;
 }
 
 export function useSpending(year: number, month: number, selectedDateKey: string) {
@@ -42,6 +49,14 @@ export function useSpending(year: number, month: number, selectedDateKey: string
     [transactions, selectedDateKey]
   );
 
+  const monthTransactions = useMemo(
+    () =>
+      filterByMonth(transactions, year, month).sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+      ),
+    [transactions, year, month]
+  );
+
   const addTransaction = useCallback(
     (input: AddTransactionInput) => {
       const entry: TransactionEntry = {
@@ -59,9 +74,18 @@ export function useSpending(year: number, month: number, selectedDateKey: string
   );
 
   const updateTransaction = useCallback(
-    (id: string, updates: Partial<Omit<TransactionEntry, 'id'>>) => {
+    (id: string, input: UpdateTransactionInput) => {
       setTransactions((prev) =>
-        prev.map((t) => (t.id === id ? { ...t, ...updates } : t))
+        prev.map((t) =>
+          t.id === id
+            ? {
+                ...t,
+                amount: Math.abs(input.amount),
+                category: input.category,
+                note: input.note.trim(),
+              }
+            : t
+        )
       );
     },
     [setTransactions]
@@ -79,6 +103,7 @@ export function useSpending(year: number, month: number, selectedDateKey: string
     summary,
     dailyMap,
     selectedDayTransactions,
+    monthTransactions,
     addTransaction,
     updateTransaction,
     deleteTransaction,

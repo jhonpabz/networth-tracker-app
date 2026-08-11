@@ -1,25 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import { Plus } from 'lucide-react';
 import { useSpending } from '../../hooks/useSpending';
-import { toDateKey } from '../../utils/spendingCalculations';
+import { TransactionEntry } from '../../types/Spending';
+import {
+  getMonthLabel,
+  toDateKey,
+} from '../../utils/spendingCalculations';
 import MonthSwitcher from './MonthSwitcher';
 import MonthlySummaryCards from './MonthlySummaryCards';
 import CalendarGrid from './CalendarGrid';
-import TransactionFeed from './TransactionFeed';
+import TransactionFeed, { HistoryView } from './TransactionFeed';
 import SimpleEntryModal from './SimpleEntryModal';
+import EditTransactionModal from './EditTransactionModal';
 
 const SpendingPage: React.FC = () => {
   const now = new Date();
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth());
   const [selectedDateKey, setSelectedDateKey] = useState(toDateKey(now));
+  const [historyView, setHistoryView] = useState<HistoryView>('day');
   const [isEntryOpen, setIsEntryOpen] = useState(false);
+  const [editingTransaction, setEditingTransaction] = useState<TransactionEntry | null>(
+    null
+  );
 
   const {
     summary,
     dailyMap,
     selectedDayTransactions,
+    monthTransactions,
     addTransaction,
+    updateTransaction,
     deleteTransaction,
   } = useSpending(year, month, selectedDateKey);
 
@@ -40,7 +51,19 @@ const SpendingPage: React.FC = () => {
     setMonth(nextMonth);
   };
 
+  const handleSelectDate = (dateKey: string) => {
+    setSelectedDateKey(dateKey);
+    setHistoryView('day');
+  };
+
   const dayBreakdown = dailyMap.get(selectedDateKey);
+  const feedTransactions =
+    historyView === 'all' ? monthTransactions : selectedDayTransactions;
+  const feedIncome =
+    historyView === 'all' ? summary.income : (dayBreakdown?.income ?? 0);
+  const feedExpense =
+    historyView === 'all' ? summary.expense : (dayBreakdown?.expense ?? 0);
+
   const entryDefaultDate = (() => {
     const [y, m, d] = selectedDateKey.split('-').map(Number);
     const base = new Date(y, m - 1, d);
@@ -65,14 +88,18 @@ const SpendingPage: React.FC = () => {
         month={month}
         dailyMap={dailyMap}
         selectedDateKey={selectedDateKey}
-        onSelectDate={setSelectedDateKey}
+        onSelectDate={handleSelectDate}
       />
 
       <TransactionFeed
+        view={historyView}
+        onViewChange={setHistoryView}
         dateKey={selectedDateKey}
-        transactions={selectedDayTransactions}
-        dayIncome={dayBreakdown?.income ?? 0}
-        dayExpense={dayBreakdown?.expense ?? 0}
+        monthLabel={getMonthLabel(year, month)}
+        transactions={feedTransactions}
+        income={feedIncome}
+        expense={feedExpense}
+        onEdit={setEditingTransaction}
         onDelete={deleteTransaction}
       />
 
@@ -90,6 +117,12 @@ const SpendingPage: React.FC = () => {
         onClose={() => setIsEntryOpen(false)}
         onSave={addTransaction}
         defaultDate={entryDefaultDate}
+      />
+
+      <EditTransactionModal
+        transaction={editingTransaction}
+        onClose={() => setEditingTransaction(null)}
+        onSave={updateTransaction}
       />
     </div>
   );
