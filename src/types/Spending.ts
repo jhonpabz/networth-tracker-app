@@ -23,12 +23,11 @@ export interface MonthlySummary {
 }
 
 export const SPENDING_CATEGORIES = [
-  'Food & Drink',
-  'Utilities',
-  'Shopping',
+  'Foods',
+  'Tiktok',
+  'Coffee',
   'Transport',
-  'Salary',
-  'Entertainment',
+  '+Balance',
   'Health',
   'Transfer',
   'Other',

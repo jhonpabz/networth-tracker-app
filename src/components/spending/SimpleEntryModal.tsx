@@ -156,7 +156,7 @@ const SimpleEntryModal: React.FC<SimpleEntryModalProps> = ({
                 : 'bg-white/5 text-zinc-400 hover:bg-white/10'
             }`}
           >
-            Income +
+            Balance +
           </button>
         </div>
 
