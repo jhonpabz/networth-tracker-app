@@ -9,12 +9,13 @@ import NetWorthPage from './components/NetWorthPage';
 import InvestPage from './components/InvestPage';
 import PlannerPage from './components/PlannerPage';
 import SpendingPage from './components/spending/SpendingPage';
+import BusinessPage from './components/business/BusinessPage';
 import ThemeToggle from './components/ThemeToggle';
 import PinSetup from './components/PinSetup';
 import PinEntry from './components/PinEntry';
 
 const GLOBAL_TAB_KEY = 'global-tab';
-const VALID_TABS: GlobalTab[] = ['networth', 'invest', 'spending', 'planner'];
+const VALID_TABS: GlobalTab[] = ['networth', 'invest', 'spending', 'business', 'planner'];
 
 function resolveInitialTab(): GlobalTab {
   const saved = localStorage.getItem(GLOBAL_TAB_KEY);
@@ -120,6 +121,8 @@ const App: React.FC = () => {
             <InvestPage />
           ) : activeTab === 'spending' ? (
             <SpendingPage />
+          ) : activeTab === 'business' ? (
+            <BusinessPage />
           ) : (
             <PlannerPage />
           )}
