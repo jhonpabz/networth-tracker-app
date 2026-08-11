@@ -27,7 +27,6 @@ export const SPENDING_CATEGORIES = [
   'Tiktok',
   'Coffee',
   'Transport',
-  '+Balance',
   'Health',
   'Transfer',
   'Other',

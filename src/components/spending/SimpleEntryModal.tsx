@@ -18,6 +18,8 @@ const KEYS = [
   ['0', '.', '±', '='],
 ] as const;
 
+const INCOME_CATEGORY = '+Balance';
+
 const SimpleEntryModal: React.FC<SimpleEntryModalProps> = ({
   isOpen,
   onClose,
@@ -26,6 +28,9 @@ const SimpleEntryModal: React.FC<SimpleEntryModalProps> = ({
 }) => {
   const [type, setType] = useState<TransactionType>('expense');
   const [category, setCategory] = useState<string>(SPENDING_CATEGORIES[0]);
+
+  const visibleCategories =
+    type === 'income' ? [INCOME_CATEGORY] : [...SPENDING_CATEGORIES];
   const [note, setNote] = useState('');
   const [expression, setExpression] = useState('0');
   const [justEvaluated, setJustEvaluated] = useState(false);
@@ -138,7 +143,12 @@ const SimpleEntryModal: React.FC<SimpleEntryModalProps> = ({
         <div className="flex gap-2 px-4 pb-3">
           <button
             type="button"
-            onClick={() => setType('expense')}
+            onClick={() => {
+              setType('expense');
+              if (category === INCOME_CATEGORY) {
+                setCategory(SPENDING_CATEGORIES[0]);
+              }
+            }}
             className={`flex-1 rounded-full py-2 text-sm font-semibold transition-colors ${
               type === 'expense'
                 ? 'bg-rose-500/20 text-rose-400 ring-1 ring-rose-500/40'
@@ -149,7 +159,10 @@ const SimpleEntryModal: React.FC<SimpleEntryModalProps> = ({
           </button>
           <button
             type="button"
-            onClick={() => setType('income')}
+            onClick={() => {
+              setType('income');
+              setCategory(INCOME_CATEGORY);
+            }}
             className={`flex-1 rounded-full py-2 text-sm font-semibold transition-colors ${
               type === 'income'
                 ? 'bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-500/40'
@@ -186,7 +199,7 @@ const SimpleEntryModal: React.FC<SimpleEntryModalProps> = ({
         </div>
 
         <div className="flex gap-2 overflow-x-auto px-4 pb-3 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {SPENDING_CATEGORIES.map((cat) => {
+          {visibleCategories.map((cat) => {
             const active = category === cat;
             return (
               <button
@@ -244,7 +257,7 @@ const SimpleEntryModal: React.FC<SimpleEntryModalProps> = ({
                 : 'bg-rose-500 text-white hover:bg-rose-400'
             }`}
           >
-            Save {type === 'income' ? 'Income' : 'Expense'}
+            Save {type === 'income' ? 'Balance' : 'Expense'}
           </button>
         </div>
       </div>
