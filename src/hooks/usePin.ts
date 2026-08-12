@@ -64,6 +64,20 @@ export const usePin = () => {
     sessionStorage.removeItem('pinAuthenticated');
   };
 
+  const changePin = (currentPin: string, newPin: string) => {
+    if (!securityData || currentPin !== securityData.pin) {
+      return false;
+    }
+
+    setSecurityData({ ...securityData, pin: newPin });
+    return true;
+  };
+
+  const authenticateSession = () => {
+    setIsAuthenticated(true);
+    sessionStorage.setItem('pinAuthenticated', 'true');
+  };
+
   return {
     hasPin: !!securityData,
     isAuthenticated,
@@ -73,6 +87,8 @@ export const usePin = () => {
     verifyPin,
     verifySecurityAnswer,
     resetPin,
-    logout
+    logout,
+    changePin,
+    authenticateSession,
   };
 };

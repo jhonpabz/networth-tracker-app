@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Account } from './types/Account';
 import { GlobalTab } from './types/Investment';
 import { useThemeProvider, ThemeContext } from './hooks/useTheme';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { usePin } from './hooks/usePin';
+import { useNavSettings } from './hooks/useNavSettings';
+import { useWebAuthn } from './hooks/useWebAuthn';
 import GlobalNav from './components/GlobalNav';
 import NetWorthPage from './components/NetWorthPage';
 import InvestPage from './components/InvestPage';
@@ -11,6 +13,9 @@ import PlannerPage from './components/PlannerPage';
 import SpendingPage from './components/spending/SpendingPage';
 import BusinessPage from './components/business/BusinessPage';
 import ThemeToggle from './components/ThemeToggle';
+import HeaderActions from './components/HeaderActions';
+import SettingsDrawer from './components/settings/SettingsDrawer';
+import InstallPrompt from './components/InstallPrompt';
 import PinSetup from './components/PinSetup';
 import PinEntry from './components/PinEntry';
 
@@ -22,7 +27,6 @@ function resolveInitialTab(): GlobalTab {
   if (saved && VALID_TABS.includes(saved as GlobalTab)) {
     return saved as GlobalTab;
   }
-  // Migrate previous tab ids into the new Invest hub
   if (saved === 'investments' || saved === 'gotrade') {
     if (saved === 'gotrade') {
       localStorage.setItem('invest-subtab', 'gotrade');
@@ -34,15 +38,57 @@ function resolveInitialTab(): GlobalTab {
 }
 
 const App: React.FC = () => {
-  const { hasPin, isAuthenticated, isLoading, securityQuestion, setPin, verifyPin, verifySecurityAnswer, resetPin } = usePin();
+  const {
+    hasPin,
+    isAuthenticated,
+    isLoading,
+    securityQuestion,
+    setPin,
+    verifyPin,
+    verifySecurityAnswer,
+    resetPin,
+    changePin,
+    authenticateSession,
+  } = usePin();
+
+  const {
+    navVisibility,
+    enabledTabs,
+    biometricsEnabled,
+    setNavVisibility,
+    setBiometricsEnabled,
+    resolveActiveTab,
+    canDisableTab,
+  } = useNavSettings();
+
+  const { authenticate } = useWebAuthn();
+
   const [accounts, setAccounts] = useLocalStorage<Account[]>('accounts', []);
   const [activeTab, setActiveTab] = useState<GlobalTab>(resolveInitialTab);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [showInstallPrompt, setShowInstallPrompt] = useState(false);
 
   const themeProvider = useThemeProvider();
+
+  useEffect(() => {
+    const resolved = resolveActiveTab(activeTab);
+    if (resolved !== activeTab) {
+      setActiveTab(resolved);
+      localStorage.setItem(GLOBAL_TAB_KEY, resolved);
+    }
+  }, [activeTab, resolveActiveTab]);
 
   const handleTabChange = (tab: GlobalTab) => {
     setActiveTab(tab);
     localStorage.setItem(GLOBAL_TAB_KEY, tab);
+  };
+
+  const handleBiometricAuth = async (): Promise<boolean> => {
+    const success = await authenticate();
+    if (success) {
+      authenticateSession();
+    }
+    return success;
   };
 
   const handleAddAccount = (accountData: Omit<Account, 'id'>) => {
@@ -99,6 +145,8 @@ const App: React.FC = () => {
           onForgotPin={resetPin}
           securityQuestion={securityQuestion}
           onSecurityAnswer={verifySecurityAnswer}
+          biometricsEnabled={biometricsEnabled}
+          onBiometricAuth={handleBiometricAuth}
         />
       </ThemeContext.Provider>
     );
@@ -107,7 +155,7 @@ const App: React.FC = () => {
   return (
     <ThemeContext.Provider value={themeProvider}>
       <div className="min-h-screen transition-colors duration-300 bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-        <ThemeToggle />
+        <HeaderActions onOpenSettings={() => setSettingsOpen(true)} />
 
         <div className="container px-4 pt-6 pb-28 mx-auto max-w-7xl">
           {activeTab === 'networth' ? (
@@ -128,7 +176,28 @@ const App: React.FC = () => {
           )}
         </div>
 
-        <GlobalNav activeTab={activeTab} onTabChange={handleTabChange} />
+        <GlobalNav
+          activeTab={activeTab}
+          enabledTabs={enabledTabs}
+          onTabChange={handleTabChange}
+        />
+
+        <InstallPrompt
+          forceShow={showInstallPrompt}
+          onDismiss={() => setShowInstallPrompt(false)}
+        />
+
+        <SettingsDrawer
+          isOpen={settingsOpen}
+          onClose={() => setSettingsOpen(false)}
+          navVisibility={navVisibility}
+          biometricsEnabled={biometricsEnabled}
+          onNavVisibilityChange={setNavVisibility}
+          onBiometricsEnabledChange={setBiometricsEnabled}
+          canDisableTab={canDisableTab}
+          onChangePin={changePin}
+          onShowInstallInstructions={() => setShowInstallPrompt(true)}
+        />
       </div>
     </ThemeContext.Provider>
   );

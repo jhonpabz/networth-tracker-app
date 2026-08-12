@@ -1,14 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Lock, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Lock, AlertCircle, ArrowLeft, Fingerprint } from 'lucide-react';
 
 interface PinEntryProps {
   onPinEntered: (pin: string) => void;
   onForgotPin: () => void;
   securityQuestion?: string;
   onSecurityAnswer?: (answer: string) => boolean;
+  biometricsEnabled?: boolean;
+  onBiometricAuth?: () => Promise<boolean>;
 }
 
-const PinEntry: React.FC<PinEntryProps> = ({ onPinEntered, onForgotPin, securityQuestion, onSecurityAnswer }) => {
+const PinEntry: React.FC<PinEntryProps> = ({
+  onPinEntered,
+  onForgotPin,
+  securityQuestion,
+  onSecurityAnswer,
+  biometricsEnabled = false,
+  onBiometricAuth,
+}) => {
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
   const [attempts, setAttempts] = useState(0);
@@ -16,6 +25,35 @@ const PinEntry: React.FC<PinEntryProps> = ({ onPinEntered, onForgotPin, security
   const [lockTime, setLockTime] = useState(0);
   const [showSecurityQuestion, setShowSecurityQuestion] = useState(false);
   const [securityAnswer, setSecurityAnswer] = useState('');
+  const [biometricAttempted, setBiometricAttempted] = useState(false);
+
+  useEffect(() => {
+    if (!biometricsEnabled || !onBiometricAuth || biometricAttempted || showSecurityQuestion) {
+      return;
+    }
+
+    let cancelled = false;
+
+    const tryBiometrics = async () => {
+      setBiometricAttempted(true);
+      try {
+        const success = await onBiometricAuth();
+        if (!cancelled && !success) {
+          setError('Biometric unlock failed. Enter your PIN instead.');
+        }
+      } catch {
+        if (!cancelled) {
+          setError('Biometric unlock unavailable. Enter your PIN instead.');
+        }
+      }
+    };
+
+    tryBiometrics();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [biometricsEnabled, onBiometricAuth, biometricAttempted, showSecurityQuestion]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -262,7 +300,24 @@ const PinEntry: React.FC<PinEntryProps> = ({ onPinEntered, onForgotPin, security
           </button>
         </div>
 
-        <div className="text-center">
+        <div className="space-y-4 text-center">
+          {biometricsEnabled && onBiometricAuth && (
+            <button
+              type="button"
+              onClick={async () => {
+                setError('');
+                const success = await onBiometricAuth();
+                if (!success) {
+                  setError('Biometric unlock failed. Enter your PIN instead.');
+                }
+              }}
+              className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+            >
+              <Fingerprint className="h-4 w-4" />
+              Use Face ID / Touch ID
+            </button>
+          )}
+
           <button
             onClick={handleForgotPin}
             className="text-blue-600 dark:text-blue-400 text-sm font-medium hover:underline"
