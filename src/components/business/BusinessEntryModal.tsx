@@ -118,9 +118,9 @@ const BusinessEntryModal: React.FC<BusinessEntryModalProps> = ({
             <input
               id="business-date"
               type="date"
-              value={dateKey}
+              value={dateKey} 
               onChange={(e) => setDateKey(e.target.value)}
-              className="block w-full max-w-full min-w-0 box-border appearance-none rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-zinc-100 focus:border-amber-400/50 focus:outline-none focus:ring-1 focus:ring-amber-400/30 [color-scheme:dark]"
+              className="block w-full max-w-[11.5rem] min-w-0 box-border appearance-none rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-zinc-100 focus:border-amber-400/50 focus:outline-none focus:ring-1 focus:ring-amber-400/30 [color-scheme:dark]"
             />
           </div>
 
@@ -169,7 +169,7 @@ const BusinessEntryModal: React.FC<BusinessEntryModalProps> = ({
               value={note}
               onChange={(e) => setNote(e.target.value)}
               placeholder="Client payment, supplies…"
-              className="block w-full max-w-full min-w-0 box-border rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-500 focus:border-amber-400/50 focus:outline-none focus:ring-1 focus:ring-amber-400/30"
+              className="block w-full max-w-full min-w-0 box-border rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-base text-zinc-100 placeholder:text-zinc-500 focus:border-amber-400/50 focus:outline-none focus:ring-1 focus:ring-amber-400/30"
             />
           </div>
 
