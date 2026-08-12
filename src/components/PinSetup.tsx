@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Shield, Check, ChevronDown } from 'lucide-react';
+import { Check, ChevronDown } from 'lucide-react';
 
 interface PinSetupProps {
   onPinSet: (pin: string, securityQuestion: string, securityAnswer: string) => void;
@@ -105,9 +105,7 @@ const PinSetup: React.FC<PinSetupProps> = ({ onPinSet }) => {
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-              <Shield className="w-10 h-10 text-white" />
-            </div>
+            <img src="/logo.png" alt="App logo" className="w-20 h-20 mx-auto mb-6 rounded-2xl object-contain" />
             <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
               Security Question
             </h1>
@@ -216,9 +214,7 @@ const PinSetup: React.FC<PinSetupProps> = ({ onPinSet }) => {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-12">
-          <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <Shield className="w-10 h-10 text-white" />
-          </div>
+          <img src="/logo.png" alt="App logo" className="w-20 h-20 mx-auto mb-6 rounded-2xl object-contain" />
           <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
             {step === 'set' ? 'Set Your PIN' : 'Confirm Your PIN'}
           </h1>
