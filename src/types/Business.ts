@@ -5,6 +5,7 @@ export interface BusinessEntry {
   date: string;
   amount: number;
   type: BusinessEntryType;
+  note: string;
 }
 
 export interface BusinessSummary {

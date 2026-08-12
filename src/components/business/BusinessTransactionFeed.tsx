@@ -114,6 +114,11 @@ const BusinessTransactionFeed: React.FC<BusinessTransactionFeedProps> = ({
                       <p className="truncate text-sm font-medium text-gray-900 dark:text-zinc-100">
                         {isIncome ? 'Income' : 'Credit'}
                       </p>
+                      {entry.note ? (
+                        <p className="truncate text-xs text-gray-500 dark:text-zinc-500">
+                          {entry.note}
+                        </p>
+                      ) : null}
                     </div>
                     <p
                       className={`shrink-0 text-sm font-semibold tabular-nums ${

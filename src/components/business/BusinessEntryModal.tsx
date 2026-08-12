@@ -21,12 +21,14 @@ const BusinessEntryModal: React.FC<BusinessEntryModalProps> = ({
   const [type, setType] = useState<BusinessEntryType>('income');
   const [dateKey, setDateKey] = useState(toDateInputValue(new Date()));
   const [amount, setAmount] = useState('');
+  const [note, setNote] = useState('');
 
   useEffect(() => {
     if (isOpen) {
       setType('income');
       setDateKey(toDateInputValue(new Date()));
       setAmount('');
+      setNote('');
     }
   }, [isOpen]);
 
@@ -42,6 +44,7 @@ const BusinessEntryModal: React.FC<BusinessEntryModalProps> = ({
       amount: parsed,
       type,
       date: dateInputToIso(dateKey),
+      note,
     });
 
     onClose();
@@ -151,6 +154,23 @@ const BusinessEntryModal: React.FC<BusinessEntryModalProps> = ({
                 }`}
               />
             </div>
+          </div>
+
+          <div className="w-full min-w-0 space-y-1.5">
+            <label
+              htmlFor="business-note"
+              className="text-xs font-medium tracking-wider uppercase text-zinc-500"
+            >
+              Note
+            </label>
+            <input
+              id="business-note"
+              type="text"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder="Client payment, supplies…"
+              className="block w-full max-w-full min-w-0 box-border rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-500 focus:border-amber-400/50 focus:outline-none focus:ring-1 focus:ring-amber-400/30"
+            />
           </div>
 
           <button

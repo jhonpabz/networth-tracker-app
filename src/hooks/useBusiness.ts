@@ -15,12 +15,14 @@ export interface AddBusinessEntryInput {
   amount: number;
   type: BusinessEntryType;
   date?: string;
+  note: string;
 }
 
 export interface UpdateBusinessEntryInput {
   amount: number;
   type: BusinessEntryType;
   date: string;
+  note: string;
 }
 
 export function useBusiness(year: number, month: number) {
@@ -45,6 +47,7 @@ export function useBusiness(year: number, month: number) {
         date: input.date ?? new Date().toISOString(),
         amount: Math.abs(input.amount),
         type: input.type,
+        note: input.note.trim(),
       };
       setEntries((prev) => [entry, ...prev]);
       return entry;
@@ -62,6 +65,7 @@ export function useBusiness(year: number, month: number) {
                 amount: Math.abs(input.amount),
                 type: input.type,
                 date: input.date,
+                note: input.note.trim(),
               }
             : e
         )
