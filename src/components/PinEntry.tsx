@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { AlertCircle, ArrowLeft, Fingerprint } from 'lucide-react';
+import { AlertCircle, ArrowLeft } from 'lucide-react';
+import PinKeypad from './PinKeypad';
+import { isWebAuthnSupported } from '../utils/webauthn';
 
 interface PinEntryProps {
   onPinEntered: (pin: string) => void;
@@ -28,7 +30,7 @@ const PinEntry: React.FC<PinEntryProps> = ({
   const [biometricAttempted, setBiometricAttempted] = useState(false);
 
   useEffect(() => {
-    if (!biometricsEnabled || !onBiometricAuth || biometricAttempted || showSecurityQuestion) {
+    if (!biometricsEnabled || !onBiometricAuth || !isWebAuthnSupported() || biometricAttempted || showSecurityQuestion) {
       return;
     }
 
@@ -154,6 +156,22 @@ const PinEntry: React.FC<PinEntryProps> = ({
     return `${Math.floor(seconds / 60)}:${(seconds % 60).toString().padStart(2, '0')}`;
   };
 
+  const showBiometric = biometricsEnabled && !!onBiometricAuth && isWebAuthnSupported();
+
+  const handleBiometricAuth = async () => {
+    if (!onBiometricAuth) return;
+
+    setError('');
+    try {
+      const success = await onBiometricAuth();
+      if (!success) {
+        setError('Biometric unlock failed. Enter your PIN instead.');
+      }
+    } catch {
+      setError('Biometric unlock unavailable. Enter your PIN instead.');
+    }
+  };
+
   if (showSecurityQuestion) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
@@ -259,61 +277,16 @@ const PinEntry: React.FC<PinEntryProps> = ({
           ))}
         </div>
 
-        {/* Number Pad */}
-        <div className="grid grid-cols-3 gap-4 mb-6">
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
-            <button
-              key={number}
-              onClick={() => handleNumberPress(number.toString())}
-              disabled={isLocked}
-              className="w-20 h-20 mx-auto bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-2xl font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95 transition-all duration-150 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {number}
-            </button>
-          ))}
-          
-          {/* Empty space */}
-          <div></div>
-          
-          {/* Zero */}
-          <button
-            onClick={() => handleNumberPress('0')}
-            disabled={isLocked}
-            className="w-20 h-20 mx-auto bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-2xl font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95 transition-all duration-150 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            0
-          </button>
-          
-          {/* Delete */}
-          <button
-            onClick={handleDelete}
-            disabled={pin.length === 0 || isLocked}
-            className="w-20 h-20 mx-auto bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95 transition-all duration-150 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" />
-            </svg>
-          </button>
-        </div>
+        <PinKeypad
+          onNumberPress={handleNumberPress}
+          onDelete={handleDelete}
+          disabled={isLocked}
+          deleteDisabled={pin.length === 0 || isLocked}
+          showBiometric={showBiometric}
+          onBiometricAuth={handleBiometricAuth}
+        />
 
-        <div className="space-y-4 text-center">
-          {biometricsEnabled && onBiometricAuth && (
-            <button
-              type="button"
-              onClick={async () => {
-                setError('');
-                const success = await onBiometricAuth();
-                if (!success) {
-                  setError('Biometric unlock failed. Enter your PIN instead.');
-                }
-              }}
-              className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
-            >
-              <Fingerprint className="h-4 w-4" />
-              Use Face ID / Touch ID
-            </button>
-          )}
-
+        <div className="text-center">
           <button
             onClick={handleForgotPin}
             className="text-blue-600 dark:text-blue-400 text-sm font-medium hover:underline"

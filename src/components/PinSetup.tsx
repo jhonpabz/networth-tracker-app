@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Check, ChevronDown } from 'lucide-react';
+import PinKeypad from './PinKeypad';
 
 interface PinSetupProps {
   onPinSet: (pin: string, securityQuestion: string, securityAnswer: string) => void;
@@ -246,40 +247,11 @@ const PinSetup: React.FC<PinSetupProps> = ({ onPinSet }) => {
           ))}
         </div>
 
-        {/* Number Pad */}
-        <div className="grid grid-cols-3 gap-4 mb-6">
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
-            <button
-              key={number}
-              onClick={() => handleNumberPress(number.toString())}
-              className="w-20 h-20 mx-auto bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-2xl font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95 transition-all duration-150 shadow-sm"
-            >
-              {number}
-            </button>
-          ))}
-          
-          {/* Empty space */}
-          <div></div>
-          
-          {/* Zero */}
-          <button
-            onClick={() => handleNumberPress('0')}
-            className="w-20 h-20 mx-auto bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-2xl font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95 transition-all duration-150 shadow-sm"
-          >
-            0
-          </button>
-          
-          {/* Delete */}
-          <button
-            onClick={handleDelete}
-            disabled={currentPin.length === 0}
-            className="w-20 h-20 mx-auto bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95 transition-all duration-150 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" />
-            </svg>
-          </button>
-        </div>
+        <PinKeypad
+          onNumberPress={handleNumberPress}
+          onDelete={handleDelete}
+          deleteDisabled={currentPin.length === 0}
+        />
 
         {step === 'confirm' && confirmPin.length === 4 && confirmPin === pin && (
           <div className="text-center">
