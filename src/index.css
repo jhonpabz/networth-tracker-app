@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    min-height: 100vh;
+    min-height: 100dvh;
+    background-color: #f8fafb;
+  }
+
+  html.dark {
+    background-color: #0f172a;
+    color-scheme: dark;
+  }
+
+  body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    background-color: inherit;
+  }
+
+  #root {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+}

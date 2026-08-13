@@ -33,9 +33,11 @@ export const NAV_TAB_CONFIG: NavTabConfig[] = [
 export interface AppSettings {
   navVisibility: NavVisibility;
   biometricsEnabled: boolean;
+  autoTriggerBiometricsOnLaunch: boolean;
 }
 
 export const DEFAULT_APP_SETTINGS: AppSettings = {
   navVisibility: DEFAULT_NAV_VISIBILITY,
   biometricsEnabled: false,
+  autoTriggerBiometricsOnLaunch: false,
 };

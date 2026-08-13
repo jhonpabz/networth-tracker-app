@@ -55,8 +55,10 @@ const App: React.FC = () => {
     navVisibility,
     enabledTabs,
     biometricsEnabled,
+    autoTriggerBiometricsOnLaunch,
     setNavVisibility,
     setBiometricsEnabled,
+    setAutoTriggerBiometricsOnLaunch,
     resolveActiveTab,
     canDisableTab,
   } = useNavSettings();
@@ -146,6 +148,7 @@ const App: React.FC = () => {
           securityQuestion={securityQuestion}
           onSecurityAnswer={verifySecurityAnswer}
           biometricsEnabled={biometricsEnabled}
+          autoTriggerBiometricsOnLaunch={autoTriggerBiometricsOnLaunch}
           onBiometricAuth={handleBiometricAuth}
         />
       </ThemeContext.Provider>
@@ -192,8 +195,10 @@ const App: React.FC = () => {
           onClose={() => setSettingsOpen(false)}
           navVisibility={navVisibility}
           biometricsEnabled={biometricsEnabled}
+          autoTriggerBiometricsOnLaunch={autoTriggerBiometricsOnLaunch}
           onNavVisibilityChange={setNavVisibility}
           onBiometricsEnabledChange={setBiometricsEnabled}
+          onAutoTriggerBiometricsOnLaunchChange={setAutoTriggerBiometricsOnLaunch}
           canDisableTab={canDisableTab}
           onChangePin={changePin}
           onShowInstallInstructions={() => setShowInstallPrompt(true)}

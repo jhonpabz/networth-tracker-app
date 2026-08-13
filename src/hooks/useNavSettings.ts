@@ -56,7 +56,18 @@ export function useNavSettings() {
 
   const setBiometricsEnabled = useCallback(
     (enabled: boolean) => {
-      setSettings((prev) => ({ ...prev, biometricsEnabled: enabled }));
+      setSettings((prev) => ({
+        ...prev,
+        biometricsEnabled: enabled,
+        ...(enabled ? {} : { autoTriggerBiometricsOnLaunch: false }),
+      }));
+    },
+    [setSettings]
+  );
+
+  const setAutoTriggerBiometricsOnLaunch = useCallback(
+    (enabled: boolean) => {
+      setSettings((prev) => ({ ...prev, autoTriggerBiometricsOnLaunch: enabled }));
     },
     [setSettings]
   );
@@ -82,8 +93,10 @@ export function useNavSettings() {
     navVisibility,
     enabledTabs,
     biometricsEnabled: settings.biometricsEnabled ?? false,
+    autoTriggerBiometricsOnLaunch: settings.autoTriggerBiometricsOnLaunch ?? false,
     setNavVisibility,
     setBiometricsEnabled,
+    setAutoTriggerBiometricsOnLaunch,
     resolveActiveTab,
     canDisableTab,
   };

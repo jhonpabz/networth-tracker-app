@@ -23,8 +23,10 @@ interface SettingsDrawerProps {
   onClose: () => void;
   navVisibility: NavVisibility;
   biometricsEnabled: boolean;
+  autoTriggerBiometricsOnLaunch: boolean;
   onNavVisibilityChange: (key: keyof NavVisibility, enabled: boolean) => void;
   onBiometricsEnabledChange: (enabled: boolean) => void;
+  onAutoTriggerBiometricsOnLaunchChange: (enabled: boolean) => void;
   canDisableTab: (key: keyof NavVisibility) => boolean;
   onChangePin: (currentPin: string, newPin: string) => boolean;
   onShowInstallInstructions: () => void;
@@ -35,8 +37,10 @@ const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
   onClose,
   navVisibility,
   biometricsEnabled,
+  autoTriggerBiometricsOnLaunch,
   onNavVisibilityChange,
   onBiometricsEnabledChange,
+  onAutoTriggerBiometricsOnLaunchChange,
   canDisableTab,
   onChangePin,
   onShowInstallInstructions,
@@ -163,6 +167,15 @@ const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
                 checked={biometricsEnabled}
                 disabled={!isSupported || isProcessing}
                 onChange={handleBiometricsToggle}
+              />
+
+              <ToggleSwitch
+                id="auto-trigger-biometrics-toggle"
+                label="Auto-trigger Face ID / Passkey on Launch"
+                description="Prompt biometrics as soon as the lock screen appears"
+                checked={autoTriggerBiometricsOnLaunch}
+                disabled={!isSupported || !biometricsEnabled || isProcessing}
+                onChange={onAutoTriggerBiometricsOnLaunchChange}
               />
 
               {biometricMessage && (

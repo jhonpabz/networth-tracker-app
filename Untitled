@@ -1,0 +1,18 @@
+Please help me make two specific updates to my React + Vite + Tailwind + TypeScript PWA:
+
+1. Dark Mode Status Bar & iOS Background Styling:
+   - When the app is in dark mode (on iOS Safari / PWA standalone mode), the top status bar (battery, time, signal area) turns white instead of matching the dark app theme. Additionally, over-scrolling reveals a white canvas.
+   - Update HTML meta tags (`index.html`) using `<meta name="theme-color">` to match the dark background hex code (`#0f172a` or slate dark).
+   - Configure Apple PWA meta tags:
+     `<meta name="apple-mobile-web-app-capable" content="yes" />`
+     `<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />` (or `black`).
+   - Ensure `html` and `body` in global CSS (`index.css` or Tailwind) have the dark background color applied with `min-height: 100vh` / `100dvh`.
+   - Ensure `manifest.json` / Vite PWA plugin sets `theme_color` and `background_color` to match the dark theme.
+
+2. Auto-Trigger Biometric/Passkey Authentication on App Launch:
+   - In Settings under SECURITY, add a toggle option for "Auto-trigger Face ID / Passkey on Launch".
+   - When enabled, as soon as the user opens the app or reaches the PIN/Lock screen, automatically fire the WebAuthn / Passkey authentication prompt (`navigator.credentials.get()`) inside a `useEffect` hook without requiring the user to manually click the "Use Face ID / Touch ID" button.
+   - If auto-authentication fails or is canceled by the user, gracefully fall back to the manual PIN entry screen.
+   - Persist this toggle state in `localStorage` or app settings state.
+
+Please provide the complete code changes for `index.html`, global CSS, web app manifest, and the React component logic for auto-triggering biometrics on load.

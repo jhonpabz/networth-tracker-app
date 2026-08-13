@@ -3,6 +3,16 @@ import { ThemeContextType } from '../types/Account';
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+const THEME_COLOR_LIGHT = '#f8fafb';
+const THEME_COLOR_DARK = '#0f172a';
+
+function updateThemeColorMeta(isDark: boolean) {
+  const meta = document.getElementById('theme-color-meta') as HTMLMetaElement | null;
+  if (meta) {
+    meta.content = isDark ? THEME_COLOR_DARK : THEME_COLOR_LIGHT;
+  }
+}
+
 export const useTheme = () => {
   const context = useContext(ThemeContext);
   if (!context) {
@@ -32,6 +42,7 @@ export const useThemeProvider = () => {
       } else {
         document.documentElement.classList.remove('dark');
       }
+      updateThemeColorMeta(isDark);
     } catch (error) {
       console.error('Error updating theme:', error);
     }
@@ -48,6 +59,7 @@ export const useThemeProvider = () => {
     } else {
       document.documentElement.classList.remove('dark');
     }
+    updateThemeColorMeta(shouldBeDark);
   }, []);
 
   const toggle = () => setIsDark(!isDark);

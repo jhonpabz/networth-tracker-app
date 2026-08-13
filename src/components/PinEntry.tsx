@@ -9,6 +9,7 @@ interface PinEntryProps {
   securityQuestion?: string;
   onSecurityAnswer?: (answer: string) => boolean;
   biometricsEnabled?: boolean;
+  autoTriggerBiometricsOnLaunch?: boolean;
   onBiometricAuth?: () => Promise<boolean>;
 }
 
@@ -18,6 +19,7 @@ const PinEntry: React.FC<PinEntryProps> = ({
   securityQuestion,
   onSecurityAnswer,
   biometricsEnabled = false,
+  autoTriggerBiometricsOnLaunch = false,
   onBiometricAuth,
 }) => {
   const [pin, setPin] = useState('');
@@ -30,7 +32,14 @@ const PinEntry: React.FC<PinEntryProps> = ({
   const [biometricAttempted, setBiometricAttempted] = useState(false);
 
   useEffect(() => {
-    if (!biometricsEnabled || !onBiometricAuth || !isWebAuthnSupported() || biometricAttempted || showSecurityQuestion) {
+    if (
+      !autoTriggerBiometricsOnLaunch ||
+      !biometricsEnabled ||
+      !onBiometricAuth ||
+      !isWebAuthnSupported() ||
+      biometricAttempted ||
+      showSecurityQuestion
+    ) {
       return;
     }
 
@@ -39,14 +48,11 @@ const PinEntry: React.FC<PinEntryProps> = ({
     const tryBiometrics = async () => {
       setBiometricAttempted(true);
       try {
-        const success = await onBiometricAuth();
-        if (!cancelled && !success) {
-          setError('Biometric unlock failed. Enter your PIN instead.');
+        if (!cancelled) {
+          await onBiometricAuth();
         }
       } catch {
-        if (!cancelled) {
-          setError('Biometric unlock unavailable. Enter your PIN instead.');
-        }
+        // Fall back silently to manual PIN entry.
       }
     };
 
@@ -55,7 +61,13 @@ const PinEntry: React.FC<PinEntryProps> = ({
     return () => {
       cancelled = true;
     };
-  }, [biometricsEnabled, onBiometricAuth, biometricAttempted, showSecurityQuestion]);
+  }, [
+    autoTriggerBiometricsOnLaunch,
+    biometricsEnabled,
+    onBiometricAuth,
+    biometricAttempted,
+    showSecurityQuestion,
+  ]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
