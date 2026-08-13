@@ -39,5 +39,5 @@ export interface AppSettings {
 export const DEFAULT_APP_SETTINGS: AppSettings = {
   navVisibility: DEFAULT_NAV_VISIBILITY,
   biometricsEnabled: false,
-  autoTriggerBiometricsOnLaunch: false,
+  autoTriggerBiometricsOnLaunch: true,
 };
