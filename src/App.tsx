@@ -160,7 +160,7 @@ const App: React.FC = () => {
       <div className="min-h-screen transition-colors duration-300 bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <HeaderActions onOpenSettings={() => setSettingsOpen(true)} />
 
-        <div className="container px-4 pt-12 mx-auto pb-28 max-w-7xl">
+        <div className="container px-4 mx-auto pt-[3rem] pb-28 max-w-7xl">
           {activeTab === 'networth' ? (
             <NetWorthPage
               accounts={accounts}
